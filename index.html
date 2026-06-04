@@ -372,6 +372,35 @@ body{max-width:960px}
   </div>
 </div>
 
+<!-- ═══════════════ SIMULATION ═══════════════ -->
+<div class="screen" id="s-sim">
+  <div style="padding:1.5rem">
+    <button class="back-btn" onclick="go('s-build')" style="margin-bottom:1.5rem;display:inline-block">← Geri</button>
+    <div class="sim-header">
+      <div>
+        <div class="sim-title" id="sim-title">Sezon Simülasyonu</div>
+        <div id="sim-sub" style="font-size:13px;color:var(--muted);margin-top:6px">Kadronuzu seçin ve simülasyonu başlatın.</div>
+      </div>
+    </div>
+
+    <div id="sim-loading" class="loading-block">
+      <div>
+        <span class="spinner"></span>Simüle ediliyor...
+      </div>
+      <div id="loading-tip" class="loading-tip">Ortalama rating hesaplanıyor…</div>
+    </div>
+
+    <div id="sim-results" style="display:none">
+      <div class="match-grid-label">38 Maçlık Sezon</div>
+      <div id="match-grid" class="match-grid"></div>
+      <div id="stat-row" class="stat-row"></div>
+      <div class="match-feed" id="match-feed"></div>
+      <div class="narrative-box" id="narrative-box"></div>
+      <div id="final-section"></div>
+    </div>
+  </div>
+</div>
+
 
 <!-- ═══════════════ BOTTOM NAV ═══════════════ -->
 <div class="bottom-bar">
@@ -725,7 +754,7 @@ const TEAMS = [
           {name:'Emre Kılınç',pos:'CM',rating:82,nat:'🇹🇷'},
           {name:'Volkan Şen',pos:'CM',rating:83,nat:'🇹🇷'},
           {name:'Pablo Batalla',pos:'CM',rating:81,nat:'🇦🇷'},
-          {name:'Qazim Laçi',pos:'CM',rating:80,nat:'🇦🇱'},
+          {name:'Qazim Laçi',pos:'CM',rating:99,nat:'🇦🇱'},
           {name:'Hervé Tum',pos:'CM',rating:80,nat:'🇨🇲'},
           {name:'Hürşut Meriç',pos:'CM',rating:79,nat:'🇹🇷'},
           {name:'Aatif Chahechouhe',pos:'CM',rating:79,nat:'🇲🇦'},
@@ -897,7 +926,11 @@ function renderPitch() {
         <div class="slot-pos">${slot.pos}</div>
         <div class="slot-name">${player ? player.name.split(' ').pop() : slot.label}</div>`;
 
-      div.onclick = () => activateSlot(key, slot.pos);
+      if (!player) {
+        div.onclick = () => activateSlot(key, slot.pos);
+      } else {
+        div.style.cursor = 'default';
+      }
       rowDiv.appendChild(div);
     });
     grid.appendChild(rowDiv);
@@ -1002,8 +1035,8 @@ function renderSlotPlayerList(q) {
   };
   const ok = compat[pos] || [pos];
   let pool = season.players.filter(p => ok.includes(p.pos));
-  if (pool.length < 3) pool = season.players;
-  if (q) pool = season.players.filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
+  if (pool.length === 0) pool = season.players;
+  if (q) pool = pool.filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
 
   const isBlind = G.mode === 'blind';
   document.getElementById('sp-player-list').innerHTML = pool.map(p => {
