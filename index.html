@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>38–0 · Türkiye Süper Ligi</title>
+<meta name="description" content="Zar at, takımını kur, 38-0 yap. Türkiye Süper Ligi'nin efsane sezonlarından hayalindeki 11'i seç ve simüle et.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0c0c;
+  --surface:#161616;
+  --card:#1e1e1e;
+  --border:#2a2a2a;
+  --border2:#333;
+  --text:#f0f0f0;
+  --muted:#888;
+  --hint:#555;
+  --red:#e8102e;
+  --red2:#c00d26;
+  --gold:#f5a623;
+  --green:#22c55e;
+  --blue:#3b82f6;
+  --radius:10px;
+  --radius-sm:6px;
+}
+html{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
+body{max-width:520px;margin:0 auto;padding:0 16px 80px;min-height:100vh}
+
+/* ── SCREENS ── */
+.screen{display:none;animation:fadeIn .25s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* ── HOME ── */
+.home-top{padding:3rem 0 1.5rem;text-align:center}
+.logo-score{font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,20vw,130px);line-height:.9;letter-spacing:-3px;color:var(--text)}
+.logo-score em{color:var(--red);font-style:normal}
+.logo-sub{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-top:.5rem}
+.home-desc{font-size:15px;color:var(--muted);line-height:1.7;margin:1.5rem 0 2rem;text-align:center}
+.home-desc strong{color:var(--text)}
+
+.mode-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.mode-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;cursor:pointer;transition:border-color .15s,transform .1s;text-align:left}
+.mode-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.mode-card.selected{border-color:var(--red)}
+.mode-icon{font-size:24px;margin-bottom:8px}
+.mode-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.5px;color:var(--text);margin-bottom:4px}
+.mode-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.mode-badge{display:inline-block;background:var(--red);color:#fff;font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;margin-bottom:6px}
+
+.stats-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:2rem}
+.strip-item{background:var(--surface);border-radius:var(--radius-sm);padding:12px 10px;text-align:center}
+.strip-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--text)}
+.strip-lab{font-size:11px;color:var(--muted)}
+
+/* ── ROLL ── */
+.roll-wrap{padding:2rem 0}
+.section-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem}
+
+.die-area{display:flex;flex-direction:column;align-items:center;gap:1rem;margin:2rem 0}
+.die{width:110px;height:110px;background:var(--card);border:1px solid var(--border2);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:56px;cursor:pointer;transition:transform .1s,border-color .2s;user-select:none;position:relative;overflow:hidden}
+.die:hover{transform:scale(1.04);border-color:var(--red)}
+.die.rolling{animation:dieRoll .55s cubic-bezier(.36,.07,.19,.97)}
+@keyframes dieRoll{0%{transform:rotate(0)scale(1)}20%{transform:rotate(-12deg)scale(1.08)}50%{transform:rotate(8deg)scale(.96)}80%{transform:rotate(-4deg)scale(1.02)}100%{transform:rotate(0)scale(1)}}
+.die-hint{font-size:13px;color:var(--muted)}
+
+.draw-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:1rem;position:relative;overflow:hidden}
+.draw-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--team-color,var(--red))}
+.draw-team{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;padding-left:12px}
+.draw-meta{display:flex;align-items:center;gap:8px;padding-left:12px;margin-top:4px}
+.draw-season{background:var(--surface);border-radius:4px;padding:3px 10px;font-size:12px;color:var(--muted)}
+.draw-badge{background:rgba(232,16,46,.15);color:var(--red);border-radius:4px;padding:3px 10px;font-size:12px}
+.draw-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-top:12px;padding-left:12px}
+
+/* ── PICK ── */
+.pick-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem;padding-top:1.5rem}
+.back-btn{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--muted);font-size:13px;cursor:pointer;transition:color .15s;flex-shrink:0}
+.back-btn:hover{color:var(--text)}
+.pick-title{font-family:'Bebas Neue',sans-serif;font-size:24px;flex:1}
+.pick-season-tag{font-size:12px;color:var(--muted);background:var(--surface);padding:3px 8px;border-radius:4px}
+
+.mode-pill{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--muted);margin-bottom:1rem}
+.mode-pill span{color:var(--gold)}
+
+/* PITCH */
+.pitch{background:linear-gradient(180deg,#1a4d18 0%,#1e5b1b 50%,#1a4d18 100%);border-radius:var(--radius);padding:14px 10px;position:relative;margin-bottom:1rem}
+.pitch-lines{position:absolute;inset:10px;border:1px solid rgba(255,255,255,.12);border-radius:6px;pointer-events:none}
+.pitch-center-circle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:56px;height:56px;border:1px solid rgba(255,255,255,.12);border-radius:50%;pointer-events:none}
+.pitch-half-line{position:absolute;left:10px;right:10px;top:50%;border-top:1px solid rgba(255,255,255,.12);pointer-events:none}
+.pitch-box-top{position:absolute;left:50%;top:10px;transform:translateX(-50%);width:120px;height:36px;border:1px solid rgba(255,255,255,.08);border-top:none;pointer-events:none}
+.pitch-box-bot{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:120px;height:36px;border:1px solid rgba(255,255,255,.08);border-bottom:none;pointer-events:none}
+
+.lineup-grid{position:relative;z-index:2;display:flex;flex-direction:column;gap:4px;padding:2px 0}
+.lineup-row{display:flex;justify-content:center;gap:4px}
+.slot{width:70px;text-align:center;cursor:pointer}
+.slot-jersey{width:46px;height:46px;border-radius:50%;border:2px dashed rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 3px;transition:all .18s;position:relative;background:rgba(255,255,255,.07)}
+.slot-jersey.filled{border-style:solid;border-color:rgba(255,255,255,.5)}
+.slot-jersey.active-slot{box-shadow:0 0 0 3px var(--gold),0 0 0 5px rgba(245,166,35,.2)}
+.slot-jersey .rating-badge{position:absolute;bottom:-3px;right:-3px;background:var(--gold);color:#000;font-size:9px;font-weight:700;border-radius:3px;padding:1px 4px;line-height:1.4}
+.slot-jersey-icon{font-size:18px;color:rgba(255,255,255,.4)}
+.slot-pos{font-size:9px;color:rgba(255,255,255,.5);letter-spacing:.5px;text-transform:uppercase}
+.slot-name{font-size:10px;color:rgba(255,255,255,.9);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70px}
+
+.pick-progress{display:flex;align-items:center;gap:8px;margin-bottom:1rem}
+.progress-bar-wrap{flex:1;height:4px;background:var(--surface);border-radius:2px;overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--red);border-radius:2px;transition:width .3s ease}
+.progress-count{font-size:12px;color:var(--muted);white-space:nowrap}
+
+/* PLAYER PICKER */
+.picker-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem}
+.picker-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface)}
+.pos-badge{background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px}
+.picker-head-text{font-size:13px;color:var(--muted)}
+.close-picker{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:0 4px}
+.close-picker:hover{color:var(--text)}
+.picker-filter{padding:8px 14px;border-bottom:1px solid var(--border)}
+.picker-filter input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif}
+.picker-filter input::placeholder{color:var(--hint)}
+.picker-filter input:focus{outline:none;border-color:var(--border2)}
+.picker-list{max-height:240px;overflow-y:auto}
+.picker-list::-webkit-scrollbar{width:4px}
+.picker-list::-webkit-scrollbar-track{background:var(--surface)}
+.picker-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.p-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.p-item:hover{background:var(--surface)}
+.p-item:last-child{border-bottom:none}
+.p-item.taken{opacity:.35;pointer-events:none}
+.p-item.mode-blind .p-rating{filter:blur(5px)}
+.p-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.p-info{flex:1}
+.p-name{font-size:14px;font-weight:500;color:var(--text)}
+.p-sub{font-size:11px;color:var(--muted)}
+.p-rating{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold)}
+.p-item.mode-blind .p-sub::after{content:' · Gözünü kapat!';color:var(--red)}
+
+/* ── SIM ── */
+.sim-wrap{padding-top:1.5rem}
+.sim-header{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem}
+.sim-title{font-family:'Bebas Neue',sans-serif;font-size:26px}
+
+.loading-block{text-align:center;padding:3rem 1rem;color:var(--muted)}
+.spinner{display:inline-block;width:22px;height:22px;border:2px solid var(--border2);border-top-color:var(--red);border-radius:50%;animation:spin .75s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-tip{font-size:12px;color:var(--hint);margin-top:8px}
+
+.match-grid-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.match-grid{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:1rem}
+.match-dot{width:14px;height:14px;border-radius:3px;cursor:default;transition:transform .1s}
+.match-dot:hover{transform:scale(1.3)}
+.match-dot.W{background:var(--green)}
+.match-dot.D{background:var(--gold)}
+.match-dot.L{background:var(--red)}
+.match-dot.pending{background:var(--surface);border:1px solid var(--border)}
+
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:1rem 0}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 8px;text-align:center}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:30px}
+.stat-l{font-size:11px;color:var(--muted);margin-top:2px}
+
+.match-feed{background:var(--surface);border-radius:var(--radius-sm);padding:12px 14px;font-size:12px;color:var(--muted);line-height:2;max-height:200px;overflow-y:auto;margin-bottom:1rem}
+.match-feed::-webkit-scrollbar{width:4px}
+.match-feed::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.feed-win{color:var(--green)}
+.feed-draw{color:var(--gold)}
+.feed-loss{color:var(--red)}
+.feed-name{color:var(--text)}
+
+.narrative-box{background:var(--card);border-left:3px solid var(--red);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:12px 14px;font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem}
+
+/* FINAL */
+.final-banner{text-align:center;padding:2.5rem 1rem;border-bottom:1px solid var(--border)}
+.final-trophy{font-size:72px;margin-bottom:.75rem}
+.final-record{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:1;letter-spacing:-2px}
+.final-record.perfect{color:var(--gold)}
+.final-tag{font-size:15px;color:var(--muted);margin-top:.5rem;line-height:1.6}
+.final-wdl{display:flex;justify-content:center;gap:1.5rem;margin-top:1rem;font-family:'Bebas Neue',sans-serif;font-size:24px}
+.wdl-w{color:var(--green)}.wdl-d{color:var(--gold)}.wdl-l{color:var(--red)}
+.final-scorer{font-size:13px;color:var(--muted);margin-top:.75rem}
+.final-scorer strong{color:var(--text)}
+
+/* BUTTONS */
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:var(--radius);font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;text-align:center;margin-bottom:8px}
+.btn:active{transform:scale(.98)}
+.btn-red{background:var(--red);color:#fff}
+.btn-red:hover{background:var(--red2)}
+.btn-ghost{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--surface)}
+.btn-sm{padding:10px 16px;font-size:13px;border-radius:var(--radius-sm);width:auto;display:inline-block;margin:0}
+
+/* TOOLTIPS */
+[data-tip]{position:relative}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#333;color:#fff;font-size:11px;padding:4px 8px;border-radius:4px;white-space:nowrap;margin-bottom:4px;pointer-events:none;z-index:10}
+
+/* BOTTOM NAV */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(12,12,12,.95);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:8px 0;z-index:100}
+.bottom-bar-inner{max-width:520px;margin:0 auto;display:flex;justify-content:space-around;padding:0 16px}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 12px;border-radius:var(--radius-sm);transition:background .15s}
+.nav-item:hover{background:var(--surface)}
+.nav-item.active .nav-icon{color:var(--red)}
+.nav-item.active .nav-label{color:var(--text)}
+.nav-icon{font-size:20px;color:var(--muted)}
+.nav-label{font-size:10px;color:var(--muted);letter-spacing:.5px}
+
+/* MISC */
+.divider{height:1px;background:var(--border);margin:1.5rem 0}
+.tag{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--muted)}
+.highlight{color:var(--gold)}
+
+/* ── BUILD SPLIT LAYOUT ── */
+body{max-width:960px}
+.build-wrap{padding-top:1rem}
+.build-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.build-split{display:grid;grid-template-columns:260px 1fr;gap:12px;align-items:start}
+.build-left{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;min-height:340px}
+.build-right{}
+.slot-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;color:var(--hint);text-align:center}
+
+/* Compact pitch for split view */
+.build-right .pitch{padding:10px 8px}
+.build-right .slot{width:58px}
+.build-right .slot-jersey{width:38px;height:38px}
+.build-right .slot-jersey-icon{font-size:15px}
+.build-right .slot-pos{font-size:8px}
+.build-right .slot-name{font-size:9px;max-width:58px}
+.build-right .lineup-row{gap:3px}
+.build-right .lineup-grid{gap:3px}
+
+/* Mobile: stack vertically */
+@media(max-width:600px){
+  .build-split{grid-template-columns:1fr}
+  .build-left{min-height:auto}
+  body{max-width:520px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div class="screen active" id="s-home">
+  <div class="home-top">
+    <div class="logo-score">38<em>–</em>0</div>
+    <div class="logo-sub">Türkiye Süper Ligi · Mükemmel Sezon</div>
+  </div>
+  <p class="home-desc">Her mevki için ayrı zar at.<br>
+  Her seferinde farklı bir takım ve sezon gelir.<br>
+  <strong>11 mevki, 11 farklı efsane kadro.</strong> 38-0 yapabilir misin?</p>
+  <div class="stats-strip">
+    <div class="strip-item"><div class="strip-val">12</div><div class="strip-lab">Takım</div></div>
+    <div class="strip-item"><div class="strip-val">28</div><div class="strip-lab">Sezon</div></div>
+    <div class="strip-item"><div class="strip-val">350+</div><div class="strip-lab">Oyuncu</div></div>
+  </div>
+  <div style="font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Mod Seç</div>
+  <div class="mode-cards">
+    <div class="mode-card selected" id="mc-classic" onclick="selectMode('classic')">
+      <div class="mode-icon">👁️</div>
+      <div class="mode-badge">KLASİK</div>
+      <div class="mode-name">Ratingi Gör</div>
+      <div class="mode-desc">Her oyuncunun puanını görerek seç. Stratejik.</div>
+    </div>
+    <div class="mode-card" id="mc-blind" onclick="selectMode('blind')">
+      <div class="mode-icon">🙈</div>
+      <div class="mode-badge" style="background:#555">ZOR</div>
+      <div class="mode-name">Hafızadan</div>
+      <div class="mode-desc">Ratingler gizli. Kim daha iyiydi? Sadece hafızan.</div>
+    </div>
+  </div>
+  <button class="btn btn-red" onclick="startBuild()">Takımı Kur →</button>
+  <button class="btn btn-ghost" onclick="go('s-info')">Nasıl Oynanır?</button>
+</div>
+
+<!-- ═══════════════ INFO ═══════════════ -->
+<div class="screen" id="s-info">
+  <div style="padding-top:1.5rem">
+    <button class="back-btn" onclick="go('s-home')" style="margin-bottom:1.5rem;display:inline-block">← Geri</button>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;margin-bottom:1.5rem">Nasıl Oynanır?</div>
+    <div style="display:flex;flex-direction:column;gap:1.5rem;color:var(--muted);font-size:14px;line-height:1.8">
+      <div><span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);display:block;margin-bottom:4px">01 · Boş Slota Tıkla</span>Sahada bir mevkiye tıkla. O mevki için zar atılır.</div>
+      <div><span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);display:block;margin-bottom:4px">02 · Takım & Sezon Çıkar</span>Rastgele bir Süper Lig takımı ve sezonu gelir. İstersen tekrar at.</div>
+      <div><span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);display:block;margin-bottom:4px">03 · Oyuncu Seç</span>O sezonda gerçekten oynamış oyunculardan birini o mevkiye yerleştir.</div>
+      <div><span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);display:block;margin-bottom:4px">04 · 11 Mevki = 11 Farklı Sezon</span>Her mevki için farklı bir takım/sezon gelebilir. Hayalindeki karma kadroyu kur.</div>
+      <div><span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--text);display:block;margin-bottom:4px">05 · Simüle Et</span>11 tamam olunca yapay zeka 38 maçı simüle eder. 38-0 yapabilir misin?</div>
+      <div style="border-top:1px solid var(--border);padding-top:1.5rem"><strong style="color:var(--text)">Klasik:</strong> Her oyuncunun ratingini görüyorsun.<br><strong style="color:var(--text)">Hafızadan:</strong> Ratingler gizli — sadece hafızan rehberin.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ BUILD ═══════════════ -->
+<div class="screen" id="s-build">
+  <div class="build-wrap">
+
+    <!-- Header -->
+    <div class="build-header">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px">Kadroyu Kur</div>
+        <div style="font-size:11px;color:var(--muted)" id="build-subtitle">Sahada bir mevkiye tıkla</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="mode-pill" style="margin:0"><span id="build-mode-text">KLASİK</span></div>
+        <div style="font-size:13px;color:var(--muted)" id="prog-count">0/11</div>
+      </div>
+    </div>
+
+    <div class="pick-progress" style="margin-bottom:.75rem">
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-fill"></div></div>
+    </div>
+
+    <!-- SPLIT LAYOUT -->
+    <div class="build-split">
+
+      <!-- LEFT: slot panel -->
+      <div class="build-left" id="build-left">
+        <div id="slot-panel-empty" class="slot-empty-state">
+          <div style="font-size:32px;margin-bottom:.5rem">⚽</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6">Sağdaki sahadan<br>bir mevkiye tıkla</div>
+        </div>
+
+        <!-- STATE A: rolling -->
+        <div id="sp-rolling" style="display:none">
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.75rem">
+            <span id="sp-pos-label" style="background:var(--red);color:#fff;padding:2px 6px;border-radius:3px;font-weight:700;margin-right:5px"></span>
+            için zar…
+          </div>
+          <div class="die-area" style="margin:.75rem 0">
+            <div class="die" id="slot-die" style="width:80px;height:80px;font-size:40px">⚽</div>
+          </div>
+        </div>
+
+        <!-- STATE B: drawn + picker -->
+        <div id="sp-drawn" style="display:none">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:.5rem">
+            <span id="sp-pos-badge" style="background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:3px"></span>
+            <button onclick="rerollSlot()" style="margin-left:auto;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--muted);font-size:11px;cursor:pointer">🎲 Tekrar</button>
+          </div>
+          <div class="draw-card" id="sp-draw-card" style="margin-bottom:.5rem;padding:10px 10px 10px 14px">
+            <div class="draw-team" id="sp-team-name" style="font-size:20px"></div>
+            <div class="draw-meta" style="margin-top:3px">
+              <span class="draw-season" id="sp-season" style="font-size:11px"></span>
+              <span class="draw-badge" id="sp-badge" style="font-size:11px"></span>
+            </div>
+          </div>
+          <input type="text" placeholder="Oyuncu ara…" id="sp-search" oninput="filterSlotPicker(this.value)"
+            style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;color:var(--text);font-size:13px;font-family:'Barlow',sans-serif;margin-bottom:.4rem">
+          <div class="picker-list" id="sp-player-list" style="max-height:calc(100vh - 420px);min-height:120px"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: pitch -->
+      <div class="build-right">
+        <div class="pitch" style="margin:0">
+          <div class="pitch-lines"></div>
+          <div class="pitch-center-circle"></div>
+          <div class="pitch-half-line"></div>
+          <div class="pitch-box-top"></div>
+          <div class="pitch-box-bot"></div>
+          <div class="lineup-grid" id="lineup-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- locked hint -->
+    <div id="locked-hint" style="display:none;text-align:center;font-size:12px;color:var(--red);margin-top:.5rem;padding:6px;background:rgba(232,16,46,.08);border-radius:var(--radius-sm)">
+      Önce bu mevki için oyuncu seç veya × ile kapat
+    </div>
+
+    <div id="sim-ready" style="display:none;margin-top:.75rem">
+      <button class="btn btn-red" onclick="go('s-sim')">🏆 Sezonu Simüle Et →</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════ BOTTOM NAV ═══════════════ -->
+<div class="bottom-bar">
+  <div class="bottom-bar-inner">
+    <div class="nav-item active" id="nav-home" onclick="navTo('s-home')">
+      <div class="nav-icon">⚽</div>
+      <div class="nav-label">ANA SAYFA</div>
+    </div>
+    <div class="nav-item" id="nav-roll" onclick="navTo('s-build')">
+      <div class="nav-icon">🎲</div>
+      <div class="nav-label">ZAR AT</div>
+    </div>
+    <div class="nav-item" id="nav-info" onclick="navTo('s-info')">
+      <div class="nav-icon">📋</div>
+      <div class="nav-label">NASIL</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA — TEAMS & SEASONS
+// ═══════════════════════════════════════════════
+const TEAMS = [
+  // ─── GALATASARAY ───
+  { id:'gs', name:'Galatasaray', short:'GS', color:'#c8102e', type:'istanbul',
+    seasons:[
+      { year:'1999-00', badge:'UEFA Kupası Yılı', desc:'Hagi, Şükür, Taffarel — Türk futbolunun dünyaya açıldığı sezon.',
+        players:[
+          {name:'Cláudio Taffarel',pos:'GK',rating:87,nat:'🇧🇷'},{name:'Capone',pos:'GK',rating:76,nat:'🇧🇷'},
+          {name:'Hakan Ünsal',pos:'RB',rating:79,nat:'🇹🇷'},{name:'Ümit Davala',pos:'RB',rating:82,nat:'🇹🇷'},
+          {name:'Bülent Korkmaz',pos:'CB',rating:87,nat:'🇹🇷'},{name:'Alpay Özalan',pos:'CB',rating:84,nat:'🇹🇷'},{name:'Cüneyt Tanman',pos:'CB',rating:77,nat:'🇹🇷'},
+          {name:'Capone',pos:'LB',rating:78,nat:'🇧🇷'},{name:'Ergün Penbe',pos:'LB',rating:80,nat:'🇹🇷'},
+          {name:'Okan Buruk',pos:'CM',rating:83,nat:'🇹🇷'},{name:'Suat Kaya',pos:'CM',rating:79,nat:'🇹🇷'},{name:'Georgi Hagi',pos:'CM',rating:91,nat:'🇷🇴'},{name:'Şükrü Doğan',pos:'CM',rating:76,nat:'🇹🇷'},
+          {name:'Hasan Şaş',pos:'RW',rating:85,nat:'🇹🇷'},{name:'Arif Erdem',pos:'RW',rating:82,nat:'🇹🇷'},
+          {name:'Hakan Şükür',pos:'ST',rating:89,nat:'🇹🇷'},{name:'Yusuf Şimşek',pos:'ST',rating:77,nat:'🇹🇷'},
+          {name:'Tugay Kerimoğlu',pos:'AM',rating:86,nat:'🇹🇷'},{name:'Popescu',pos:'AM',rating:83,nat:'🇷🇴'},
+          {name:'Mustafa Doğan',pos:'LW',rating:78,nat:'🇹🇷'}
+        ]},
+      { year:'2011-12', badge:'Drogba & Sneijder', desc:'Sneijder ve Drogba ile Süper Lig hakimiyeti.',
+        players:[
+          {name:'Fernando Muslera',pos:'GK',rating:88,nat:'🇺🇾'},{name:'Erman Kılıç',pos:'GK',rating:75,nat:'🇹🇷'},
+          {name:'Serkan Balcı',pos:'RB',rating:77,nat:'🇹🇷'},{name:'Eboué',pos:'RB',rating:80,nat:'🇨🇮'},
+          {name:'Carlos Nounkeu',pos:'CB',rating:79,nat:'🇨🇲'},{name:'Felipe Melo',pos:'CB',rating:82,nat:'🇧🇷'},{name:'Mehmet Topal',pos:'CB',rating:81,nat:'🇹🇷'},
+          {name:'Albert Riera',pos:'LB',rating:79,nat:'🇪🇸'},{name:'Rodrigues',pos:'LB',rating:76,nat:'🇵🇹'},
+          {name:'Selçuk İnan',pos:'CM',rating:84,nat:'🇹🇷'},{name:'Wesley Sneijder',pos:'CM',rating:91,nat:'🇳🇱'},{name:'Hamit Altıntop',pos:'CM',rating:83,nat:'🇹🇷'},{name:'Emre Çolak',pos:'CM',rating:79,nat:'🇹🇷'},
+          {name:'Burak Yılmaz',pos:'RW',rating:86,nat:'🇹🇷'},{name:'Nordin Amrabat',pos:'RW',rating:78,nat:'🇲🇦'},
+          {name:'Didier Drogba',pos:'ST',rating:90,nat:'🇨🇮'},{name:'Johan Elmander',pos:'ST',rating:80,nat:'🇸🇪'},
+          {name:'Arda Turan',pos:'AM',rating:87,nat:'🇹🇷'},{name:'Kazım Kazım',pos:'LW',rating:79,nat:'🇹🇷'}
+        ]},
+      { year:'2017-18', badge:'Gomis 29 Gol', desc:'Fatih Terim ile Bafetimbi Gomis 29 golle ligde fırtına kopardı.',
+        players:[
+          {name:'Fernando Muslera',pos:'GK',rating:87,nat:'🇺🇾'},{name:'Sinan Bolat',pos:'GK',rating:76,nat:'🇧🇪'},
+          {name:'Şener Özbayraklı',pos:'RB',rating:79,nat:'🇹🇷'},{name:'Maicon',pos:'RB',rating:78,nat:'🇧🇷'},
+          {name:'Chedjou',pos:'CB',rating:80,nat:'🇨🇲'},{name:'Lionel Carole',pos:'CB',rating:77,nat:'🇫🇷'},{name:'Serdar Aziz',pos:'CB',rating:79,nat:'🇹🇷'},
+          {name:'Nagatomo',pos:'LB',rating:82,nat:'🇯🇵'},{name:'Saracchi',pos:'LB',rating:77,nat:'🇺🇾'},
+          {name:'Yassine Belhanda',pos:'CM',rating:84,nat:'🇲🇦'},{name:'Selçuk İnan',pos:'CM',rating:83,nat:'🇹🇷'},{name:'Fernando',pos:'CM',rating:81,nat:'🇧🇷'},{name:'Emre Akbaba',pos:'CM',rating:80,nat:'🇹🇷'},
+          {name:'Sofiane Feghouli',pos:'RW',rating:82,nat:'🇩🇿'},{name:'Sinan Gümüş',pos:'RW',rating:78,nat:'🇹🇷'},
+          {name:'Bafetimbi Gomis',pos:'ST',rating:88,nat:'🇫🇷'},{name:'Mbaye Diagne',pos:'ST',rating:82,nat:'🇸🇳'},
+          {name:'Henry Onyekuru',pos:'LW',rating:81,nat:'🇳🇬'},{name:'Younes Belhanda',pos:'AM',rating:80,nat:'🇲🇦'}
+        ]},
+      { year:'2022-23', badge:'Şampiyon', desc:'Icardi, Torreira ve Mertens ile şampiyonluk.',
+        players:[
+          {name:'Fernando Muslera',pos:'GK',rating:85,nat:'🇺🇾'},{name:'İnaki Peña',pos:'GK',rating:78,nat:'🇪🇸'},
+          {name:'Sacha Boey',pos:'RB',rating:82,nat:'🇫🇷'},{name:'Cedric',pos:'RB',rating:77,nat:'🇵🇹'},
+          {name:'Victor Nelsson',pos:'CB',rating:83,nat:'🇩🇰'},{name:'Marcão',pos:'CB',rating:80,nat:'🇧🇷'},{name:'Davinson Sánchez',pos:'CB',rating:82,nat:'🇨🇴'},
+          {name:'Kerem Aktürkoğlu',pos:'LB',rating:82,nat:'🇹🇷'},{name:'Patrick van Aanholt',pos:'LB',rating:79,nat:'🇳🇱'},
+          {name:'Lucas Torreira',pos:'CM',rating:86,nat:'🇺🇾'},{name:'Dries Mertens',pos:'CM',rating:85,nat:'🇧🇪'},{name:'Sergio Oliveira',pos:'CM',rating:82,nat:'🇵🇹'},{name:'Yunus Akgün',pos:'CM',rating:79,nat:'🇹🇷'},
+          {name:'Wilfried Zaha',pos:'RW',rating:83,nat:'🇨🇮'},{name:'Milot Rashica',pos:'RW',rating:78,nat:'🇽🇰'},
+          {name:'Mauro Icardi',pos:'ST',rating:88,nat:'🇦🇷'},{name:'Baris Alper Yılmaz',pos:'ST',rating:79,nat:'🇹🇷'},
+          {name:'Kerem Aktürkoğlu',pos:'LW',rating:83,nat:'🇹🇷'},{name:'Tetê',pos:'LW',rating:80,nat:'🇧🇷'}
+        ]}
+    ]},
+
+  // ─── FENERBAHÇE ───
+  { id:'fb', name:'Fenerbahçe', short:'FB', color:'#002868', type:'istanbul',
+    seasons:[
+      { year:'2004-05', badge:'Zico Dönemi', desc:'Zico\'nun takımı Anelka ve Alex ile şampiyonluğa koştu.',
+        players:[
+          {name:'Rüştü Reçber',pos:'GK',rating:87,nat:'🇹🇷'},{name:'Serdar Kulbilge',pos:'GK',rating:74,nat:'🇹🇷'},
+          {name:'Umit Ozat',pos:'RB',rating:80,nat:'🇹🇷'},{name:'Fabio Luciano',pos:'RB',rating:79,nat:'🇧🇷'},
+          {name:'Diego Lugano',pos:'CB',rating:85,nat:'🇺🇾'},{name:'Serkan Çalık',pos:'CB',rating:78,nat:'🇹🇷'},{name:'Marco Aurelio',pos:'CB',rating:77,nat:'🇧🇷'},
+          {name:'Deniz Barış',pos:'LB',rating:77,nat:'🇹🇷'},{name:'Selçuk Saçlı',pos:'LB',rating:75,nat:'🇹🇷'},
+          {name:'Stephen Appiah',pos:'CM',rating:83,nat:'🇬🇭'},{name:'Mehmet Aurelio',pos:'CM',rating:82,nat:'🇧🇷'},{name:'Tuncay Şanlı',pos:'CM',rating:84,nat:'🇹🇷'},{name:'Serhat Akansel',pos:'CM',rating:76,nat:'🇹🇷'},
+          {name:'Nicolas Anelka',pos:'ST',rating:87,nat:'🇫🇷'},{name:'Önder Turaci',pos:'ST',rating:75,nat:'🇹🇷'},
+          {name:'Alex de Souza',pos:'AM',rating:99,nat:'🇧🇷'},{name:'Tuncay Şanlı',pos:'AM',rating:84,nat:'🇹🇷'},
+          {name:'Nikos Liberopoulos',pos:'LW',rating:80,nat:'🇬🇷'},{name:'Saša Ćurčić',pos:'RW',rating:78,nat:'🇷🇸'}
+        ]},
+      { year:'2010-11', badge:'Alex & Lugano Zirvede', desc:'Üç maç eksiğiyle şampiyonluk tartışması — tarihin en dramatik sezonu.',
+        players:[
+          {name:'Volkan Demirel',pos:'GK',rating:85,nat:'🇹🇷'},{name:'Serdar Kulbilge',pos:'GK',rating:73,nat:'🇹🇷'},
+          {name:'Gökhan Gönül',pos:'RB',rating:85,nat:'🇹🇷'},{name:'Fabio Bilica',pos:'RB',rating:77,nat:'🇧🇷'},
+          {name:'Diego Lugano',pos:'CB',rating:84,nat:'🇺🇾'},{name:'Emre Belözoğlu',pos:'CB',rating:82,nat:'🇹🇷'},{name:'Michal Kadlec',pos:'CB',rating:79,nat:'🇨🇿'},
+          {name:'Cris Baroni',pos:'LB',rating:79,nat:'🇧🇷'},{name:'Bekir İrtegün',pos:'LB',rating:76,nat:'🇹🇷'},
+          {name:'Mehmet Topal',pos:'CM',rating:82,nat:'🇹🇷'},{name:'Raul Meireles',pos:'CM',rating:86,nat:'🇵🇹'},{name:'Souza',pos:'CM',rating:85,nat:'🇧🇷'},{name:'Emre Belözoğlu',pos:'CM',rating:84,nat:'🇹🇷'},
+          {name:'Semih Şentürk',pos:'RW',rating:79,nat:'🇹🇷'},{name:'Niang',pos:'RW',rating:78,nat:'🇸🇳'},
+          {name:'Pierre Webó',pos:'ST',rating:83,nat:'🇨🇲'},{name:'Dia El Dein',pos:'ST',rating:76,nat:'🇸🇾'},
+          {name:'Alex de Souza',pos:'AM',rating:99,nat:'🇧🇷'},{name:'Gael Kakuta',pos:'LW',rating:78,nat:'🇫🇷'}
+        ]},
+      { year:'2013-14', badge:'Josê Sosa Sezonu', desc:'Josê Sosa ve Emre Belözoğlu ile Avrupa macerası.',
+        players:[
+          {name:'Volkan Demirel',pos:'GK',rating:84,nat:'🇹🇷'},{name:'Diego Benaglio',pos:'GK',rating:80,nat:'🇨🇭'},
+          {name:'Gökhan Gönül',pos:'RB',rating:82,nat:'🇹🇷'},{name:'Ramirez',pos:'RB',rating:77,nat:'🇺🇾'},
+          {name:'Simon Kjær',pos:'CB',rating:85,nat:'🇩🇰'},{name:'Mehmet Topal',pos:'CB',rating:83,nat:'🇹🇷'},{name:'Gregory van der Wiel',pos:'CB',rating:80,nat:'🇳🇱'},
+          {name:'Cris Baroni',pos:'LB',rating:77,nat:'🇧🇷'},{name:'Nill De Pauw',pos:'LB',rating:76,nat:'🇧🇪'},
+          {name:'Emre Belözoğlu',pos:'CM',rating:84,nat:'🇹🇷'},{name:'Josê Sosa',pos:'CM',rating:86,nat:'🇦🇷'},{name:'Ramirez',pos:'CM',rating:79,nat:'🇺🇾'},{name:'Alper Potuk',pos:'CM',rating:79,nat:'🇹🇷'},
+          {name:'Dirk Kuyt',pos:'RW',rating:84,nat:'🇳🇱'},{name:'Moussa Sow',pos:'RW',rating:82,nat:'🇸🇳'},
+          {name:'Emmanuel Emenike',pos:'ST',rating:82,nat:'🇳🇬'},{name:'Robin van Persie',pos:'ST',rating:88,nat:'🇳🇱'},
+          {name:'Mamadou Niang',pos:'LW',rating:81,nat:'🇸🇳'},{name:'Stoch',pos:'LW',rating:79,nat:'🇸🇰'}
+        ]},
+      { year:'2023-24', badge:'Mourinho Dönemi', desc:'Jose Mourinho ile büyük beklentiler — Džeko ve Tadic sahne aldı.',
+        players:[
+          {name:'Dominik Livaković',pos:'GK',rating:86,nat:'🇭🇷'},{name:'Altay Bayındır',pos:'GK',rating:81,nat:'🇹🇷'},
+          {name:'Bright Osayi-Samuel',pos:'RB',rating:80,nat:'🇳🇬'},{name:'İsmail Yüksek',pos:'RB',rating:79,nat:'🇹🇷'},
+          {name:'Alexander Djiku',pos:'CB',rating:82,nat:'🇬🇭'},{name:'Rodrigo Becao',pos:'CB',rating:81,nat:'🇧🇷'},{name:'Çağlar Söyüncü',pos:'CB',rating:83,nat:'🇹🇷'},
+          {name:'Ferdi Kadıoğlu',pos:'LB',rating:84,nat:'🇳🇱'},{name:'Oosterwolde',pos:'LB',rating:79,nat:'🇳🇱'},
+          {name:'İrfan Can Kahveci',pos:'CM',rating:82,nat:'🇹🇷'},{name:'Sebastian Szymański',pos:'CM',rating:83,nat:'🇵🇱'},{name:'Fred',pos:'CM',rating:82,nat:'🇧🇷'},{name:'Osayi-Samuel',pos:'CM',rating:78,nat:'🇳🇬'},
+          {name:'Dušan Tadić',pos:'AM',rating:85,nat:'🇷🇸'},{name:'Cengiz Ünder',pos:'RW',rating:81,nat:'🇹🇷'},
+          {name:'Edin Džeko',pos:'ST',rating:84,nat:'🇧🇦'},{name:'Michy Batshuayi',pos:'ST',rating:80,nat:'🇧🇪'},
+          {name:'Rodrigo Becao',pos:'LW',rating:77,nat:'🇧🇷'},{name:'Baris Alper Yılmaz',pos:'LW',rating:79,nat:'🇹🇷'}
+        ]}
+    ]},
+
+  // ─── BEŞİKTAŞ ───
+  { id:'bjk', name:'Beşiktaş', short:'BJK', color:'#1a1a1a', type:'istanbul',
+    seasons:[
+      { year:'2002-03', badge:'Sergen Yılı', desc:'Sergen Yalçın en parlak dönemini yaşadı.',
+        players:[
+          {name:'Rüştü Reçber',pos:'GK',rating:86,nat:'🇹🇷'},{name:'Hüseyin Özcan',pos:'GK',rating:74,nat:'🇹🇷'},
+          {name:'Ömer Aysan',pos:'RB',rating:77,nat:'🇹🇷'},{name:'Ahmet Dursun',pos:'RB',rating:76,nat:'🇹🇷'},
+          {name:'İbrahim Üzülmez',pos:'CB',rating:83,nat:'🇹🇷'},{name:'Tayfur Havutçu',pos:'CB',rating:80,nat:'🇹🇷'},{name:'Ahmet Dursun',pos:'CB',rating:76,nat:'🇹🇷'},
+          {name:'Ahmet Dursun',pos:'LB',rating:76,nat:'🇹🇷'},{name:'Mert Nobre',pos:'LB',rating:77,nat:'🇧🇷'},
+          {name:'Sergen Yalçın',pos:'AM',rating:89,nat:'🇹🇷'},{name:'İlhan Mansız',pos:'AM',rating:83,nat:'🇹🇷'},
+          {name:'Mehmet Şahin',pos:'CM',rating:79,nat:'🇹🇷'},{name:'Tayfur Havutçu',pos:'CM',rating:80,nat:'🇹🇷'},{name:'Daniel Pancu',pos:'CM',rating:80,nat:'🇷🇴'},
+          {name:'Adem Koçak',pos:'RW',rating:78,nat:'🇹🇷'},{name:'Nikos Machlas',pos:'RW',rating:80,nat:'🇬🇷'},
+          {name:'Nihat Kahveci',pos:'ST',rating:84,nat:'🇹🇷'},{name:'Correa',pos:'ST',rating:78,nat:'🇧🇷'},
+          {name:'Ricardo Coloccini',pos:'LW',rating:79,nat:'🇦🇷'}
+        ]},
+      { year:'2015-16', badge:'Şampiyon', desc:'Negredo, Babel ve Oğuzhan ile şampiyonluk.',
+        players:[
+          {name:'Tolga Zengin',pos:'GK',rating:83,nat:'🇹🇷'},{name:'Ersin Destanoğlu',pos:'GK',rating:72,nat:'🇹🇷'},
+          {name:'Rhodolfo',pos:'RB',rating:79,nat:'🇧🇷'},{name:'Gökhan Gönül',pos:'RB',rating:82,nat:'🇹🇷'},
+          {name:'Duško Tošić',pos:'CB',rating:82,nat:'🇷🇸'},{name:'Andreas Bjelland',pos:'CB',rating:80,nat:'🇩🇰'},{name:'Atiba Hutchinson',pos:'CB',rating:82,nat:'🇨🇦'},
+          {name:'Adriano',pos:'LB',rating:81,nat:'🇧🇷'},{name:'Veli Kavlak',pos:'LB',rating:77,nat:'🇦🇹'},
+          {name:'Oğuzhan Özyakup',pos:'CM',rating:85,nat:'🇹🇷'},{name:'Atiba Hutchinson',pos:'CM',rating:84,nat:'🇨🇦'},{name:'Gary Medel',pos:'CM',rating:83,nat:'🇨🇱'},{name:'Anderson Talisca',pos:'CM',rating:84,nat:'🇧🇷'},
+          {name:'Ryan Babel',pos:'RW',rating:83,nat:'🇳🇱'},{name:'Gökhan Töre',pos:'RW',rating:81,nat:'🇹🇷'},
+          {name:'Álvaro Negredo',pos:'ST',rating:86,nat:'🇪🇸'},{name:'Demba Ba',pos:'ST',rating:82,nat:'🇸🇳'},
+          {name:'Cenk Tosun',pos:'LW',rating:81,nat:'🇹🇷'},{name:'Olcay Şahan',pos:'LW',rating:79,nat:'🇹🇷'}
+        ]},
+      { year:'2016-17', badge:'Pepe & ŞL Grubu', desc:'Pepe ile şampiyonluk ve Şampiyonlar Ligi grupları.',
+        players:[
+          {name:'Fabricio',pos:'GK',rating:82,nat:'🇧🇷'},{name:'Tolga Zengin',pos:'GK',rating:82,nat:'🇹🇷'},
+          {name:'Gökhan Gönül',pos:'RB',rating:83,nat:'🇹🇷'},{name:'Andreas Beck',pos:'RB',rating:79,nat:'🇩🇪'},
+          {name:'Pepe',pos:'CB',rating:87,nat:'🇵🇹'},{name:'Tosić',pos:'CB',rating:81,nat:'🇷🇸'},{name:'Domagoj Vida',pos:'CB',rating:82,nat:'🇭🇷'},
+          {name:'Adriano',pos:'LB',rating:80,nat:'🇧🇷'},{name:'Rhodolfo',pos:'LB',rating:78,nat:'🇧🇷'},
+          {name:'Oğuzhan Özyakup',pos:'CM',rating:85,nat:'🇹🇷'},{name:'Atiba Hutchinson',pos:'CM',rating:84,nat:'🇨🇦'},{name:'Gökhan Töre',pos:'CM',rating:81,nat:'🇹🇷'},{name:'Tolgay Arslan',pos:'CM',rating:80,nat:'🇩🇪'},
+          {name:'Ryan Babel',pos:'RW',rating:84,nat:'🇳🇱'},{name:'Ricardo Quaresma',pos:'RW',rating:85,nat:'🇵🇹'},
+          {name:'Vincent Aboubakar',pos:'ST',rating:84,nat:'🇨🇲'},{name:'Cenk Tosun',pos:'ST',rating:82,nat:'🇹🇷'},
+          {name:'Anderson Talisca',pos:'LW',rating:83,nat:'🇧🇷'},{name:'Mustafa Pektemek',pos:'LW',rating:78,nat:'🇹🇷'}
+        ]}
+    ]},
+
+  // ─── TRABZONSPOR ───
+  { id:'ts', name:'Trabzonspor', short:'TS', color:'#a2153d', type:'anadolu',
+    seasons:[
+      { year:'1983-84', badge:'Altın Çağ', desc:'Trabzonspor\'un altın çağı — Hami Mandıralı ve Ahmet Suat Özyazıcı efsaneleri.',
+        players:[
+          {name:'Cengiz Polat',pos:'GK',rating:79,nat:'🇹🇷'},{name:'Hüseyin Yıldırım',pos:'GK',rating:75,nat:'🇹🇷'},
+          {name:'Cemil Turan',pos:'RB',rating:78,nat:'🇹🇷'},{name:'Rıdvan Dilmen',pos:'RB',rating:80,nat:'🇹🇷'},
+          {name:'Tevfik Kömürcü',pos:'CB',rating:81,nat:'🇹🇷'},{name:'Erdoğan Arıca',pos:'CB',rating:79,nat:'🇹🇷'},{name:'Hamdi Cansever',pos:'CB',rating:77,nat:'🇹🇷'},
+          {name:'Hamdi Cansever',pos:'LB',rating:77,nat:'🇹🇷'},{name:'Ali Kemal Denizci',pos:'LB',rating:75,nat:'🇹🇷'},
+          {name:'Ahmet Suat Özyazıcı',pos:'AM',rating:88,nat:'🇹🇷'},{name:'Rıdvan Dilmen',pos:'AM',rating:83,nat:'🇹🇷'},
+          {name:'Hami Mandıralı',pos:'CM',rating:85,nat:'🇹🇷'},{name:'Necmi Akaslan',pos:'CM',rating:80,nat:'🇹🇷'},{name:'Şükrü Ersoy',pos:'CM',rating:79,nat:'🇹🇷'},
+          {name:'Fatih Tekke',pos:'ST',rating:85,nat:'🇹🇷'},{name:'Turan Bozkurt',pos:'ST',rating:78,nat:'🇹🇷'},
+          {name:'Şükrü Ersoy',pos:'RW',rating:79,nat:'🇹🇷'},{name:'Cengiz Polat',pos:'LW',rating:75,nat:'🇹🇷'}
+        ]},
+      { year:'2010-11', badge:'Bosingwa & Zokora', desc:'Colman, Zokora ve Bosingwa ile unutulmaz sezon.',
+        players:[
+          {name:'Onur Kıvrak',pos:'GK',rating:83,nat:'🇹🇷'},{name:'Savaş Çelik',pos:'GK',rating:74,nat:'🇹🇷'},
+          {name:'Joao Pereira',pos:'RB',rating:80,nat:'🇵🇹'},{name:'Olcan Adın',pos:'RB',rating:79,nat:'🇹🇷'},
+          {name:'Gustavo Colman',pos:'CB',rating:81,nat:'🇦🇷'},{name:'Koray Avcı',pos:'CB',rating:77,nat:'🇹🇷'},{name:'Soner Aydoğdu',pos:'CB',rating:76,nat:'🇹🇷'},
+          {name:'José Bosingwa',pos:'LB',rating:85,nat:'🇵🇹'},{name:'Giray Kaçar',pos:'LB',rating:78,nat:'🇩🇪'},
+          {name:'Didier Zokora',pos:'CM',rating:84,nat:'🇨🇮'},{name:'Paul Scharner',pos:'CM',rating:80,nat:'🇦🇹'},{name:'Giray Kaçar',pos:'CM',rating:78,nat:'🇩🇪'},{name:'Selçuk İnan',pos:'CM',rating:82,nat:'🇹🇷'},
+          {name:'Olcan Adın',pos:'RW',rating:79,nat:'🇹🇷'},{name:'Alanzinho',pos:'RW',rating:78,nat:'🇧🇷'},
+          {name:'Burak Yılmaz',pos:'ST',rating:85,nat:'🇹🇷'},{name:'Teofilo Gutierrez',pos:'ST',rating:82,nat:'🇨🇴'},
+          {name:'Gökdeniz Karadeniz',pos:'AM',rating:86,nat:'🇹🇷'},{name:'Alanzinho',pos:'LW',rating:78,nat:'🇧🇷'}
+        ]},
+      { year:'2021-22', badge:'11 Yıl Sonra Şampiyonluk', desc:'Nwakaeme ve Visca\'nın muhteşem sezonuyla 11 yıl aradan sonra şampiyonluk.',
+        players:[
+          {name:'Uğurcan Çakır',pos:'GK',rating:85,nat:'🇹🇷'},{name:'Stefano Denswil',pos:'GK',rating:72,nat:'🇳🇱'},
+          {name:'Dorukhan Toköz',pos:'RB',rating:79,nat:'🇹🇷'},{name:'Vitor Hugo',pos:'RB',rating:78,nat:'🇧🇷'},
+          {name:'Marc Bartra',pos:'CB',rating:82,nat:'🇪🇸'},{name:'Vitor Hugo',pos:'CB',rating:80,nat:'🇧🇷'},{name:'Stefano Denswil',pos:'CB',rating:79,nat:'🇳🇱'},
+          {name:'Caner Erkin',pos:'LB',rating:81,nat:'🇹🇷'},{name:'Bruno Peres',pos:'LB',rating:78,nat:'🇧🇷'},
+          {name:'Yusuf Yazıcı',pos:'CM',rating:84,nat:'🇹🇷'},{name:'Abdülkadir Ömür',pos:'CM',rating:82,nat:'🇹🇷'},{name:'Majid Hosseini',pos:'CM',rating:78,nat:'🇮🇷'},{name:'Mäs Bakasetas',pos:'CM',rating:82,nat:'🇬🇷'},
+          {name:'Anthony Nwakaeme',pos:'RW',rating:86,nat:'🇳🇬'},{name:'Abdülkadir Ömür',pos:'RW',rating:82,nat:'🇹🇷'},
+          {name:'Djaniny Tavares',pos:'ST',rating:82,nat:'🇨🇻'},{name:'Paul Onuachu',pos:'ST',rating:81,nat:'🇳🇬'},
+          {name:'Edin Visca',pos:'LW',rating:84,nat:'🇧🇦'},{name:'Flávio',pos:'LW',rating:77,nat:'🇵🇹'}
+        ]}
+    ]},
+
+  // ─── SİVASSPOR ───
+  { id:'ss', name:'Sivasspor', short:'SS', color:'#cc0000', type:'anadolu',
+    seasons:[
+      { year:'2007-08', badge:'Tarihin Sürprizi', desc:'Bülent Uygun yönetiminde Süper Lig\'i sallayan Sivas.',
+        players:[
+          {name:'İbrahim Akın',pos:'GK',rating:79,nat:'🇹🇷'},{name:'Ali Dere',pos:'GK',rating:73,nat:'🇹🇷'},
+          {name:'Hakan Arslan',pos:'RB',rating:77,nat:'🇹🇷'},{name:'Sedat Bayrak',pos:'RB',rating:76,nat:'🇹🇷'},
+          {name:'Mehmet Yıldız',pos:'CB',rating:78,nat:'🇹🇷'},{name:'Sedat Bayrak',pos:'CB',rating:76,nat:'🇹🇷'},{name:'Cevher Tokatlı',pos:'CB',rating:77,nat:'🇹🇷'},
+          {name:'Cevher Tokatlı',pos:'LB',rating:77,nat:'🇹🇷'},{name:'Süleyman Olgun',pos:'LB',rating:75,nat:'🇹🇷'},
+          {name:'Tümer Metin',pos:'CM',rating:83,nat:'🇹🇷'},{name:'Mehmet Yıldız',pos:'CM',rating:79,nat:'🇹🇷'},{name:'Serkan Balcı',pos:'CM',rating:78,nat:'🇹🇷'},{name:'Osman Çelik',pos:'CM',rating:77,nat:'🇹🇷'},
+          {name:'Sedat Sözüer',pos:'RW',rating:77,nat:'🇹🇷'},
+          {name:'Musa Aydın',pos:'ST',rating:80,nat:'🇹🇷'},{name:'Leandro',pos:'ST',rating:79,nat:'🇧🇷'},
+          {name:'Sedat Sözüer',pos:'LW',rating:77,nat:'🇹🇷'},{name:'Aatif Chahechouhe',pos:'LW',rating:78,nat:'🇲🇦'}
+        ]},
+      { year:'2019-20', badge:'Avrupa Hedefi', desc:'Gradel ve Fajr ile Avrupa kapısına dayanan Sivasspor.',
+        players:[
+          {name:'Muammer Yıldırım',pos:'GK',rating:80,nat:'🇹🇷'},{name:'Sören Nordfeldt',pos:'GK',rating:78,nat:'🇸🇪'},
+          {name:'Max-Alain Gradel',pos:'RB',rating:82,nat:'🇨🇮'},{name:'Caner Osmanpaşa',pos:'RB',rating:76,nat:'🇹🇷'},
+          {name:'Uğur Çiftçi',pos:'CB',rating:78,nat:'🇹🇷'},{name:'David Yablonsky',pos:'CB',rating:79,nat:'🇫🇷'},{name:'Ziya Erdal',pos:'CB',rating:76,nat:'🇹🇷'},
+          {name:'Fouad Fajr',pos:'LB',rating:80,nat:'🇲🇦'},{name:'Jorge Felix',pos:'LB',rating:77,nat:'🇵🇹'},
+          {name:'Claudemir',pos:'CM',rating:82,nat:'🇧🇷'},{name:'Mert Hakan Yandaş',pos:'CM',rating:81,nat:'🇹🇷'},{name:'Emre Kılınç',pos:'CM',rating:82,nat:'🇹🇷'},{name:'Hakan Arslan',pos:'CM',rating:76,nat:'🇹🇷'},
+          {name:'Max-Alain Gradel',pos:'RW',rating:83,nat:'🇨🇮'},{name:'Arouna Koné',pos:'RW',rating:79,nat:'🇨🇮'},
+          {name:'Fernando',pos:'ST',rating:81,nat:'🇧🇷'},{name:'Olarenwaju Kayode',pos:'ST',rating:80,nat:'🇳🇬'},
+          {name:'Emre Kılınç',pos:'LW',rating:82,nat:'🇹🇷'},{name:'Robinho',pos:'LW',rating:81,nat:'🇸🇹'}
+        ]}
+    ]},
+
+  // ─── BURSASPOR ───
+  { id:'bs', name:'Bursaspor', short:'BS', color:'#006633', type:'anadolu',
+    seasons:[
+      { year:'2009-10', badge:'Yeşil Timsah Şampiyonu', desc:'Ertuğrul Sağlam ile tarihin en büyük sürprizi.',
+        players:[
+          {name:'Dimitar Ivankov',pos:'GK',rating:84,nat:'🇧🇬'},{name:'Aloísio',pos:'GK',rating:73,nat:'🇧🇷'},
+          {name:'Tabata',pos:'RB',rating:79,nat:'🇧🇷'},{name:'Ömer Erdoğan',pos:'RB',rating:76,nat:'🇹🇷'},
+          {name:'Serdar Özkan',pos:'CB',rating:78,nat:'🇹🇷'},{name:'Serkan Kurtuluş',pos:'CB',rating:77,nat:'🇹🇷'},{name:'İbrahim Üzülmez',pos:'CB',rating:80,nat:'🇹🇷'},
+          {name:'Ömer Erdoğan',pos:'LB',rating:76,nat:'🇹🇷'},{name:'Hüseyin Yılmaz',pos:'LB',rating:75,nat:'🇹🇷'},
+          {name:'Volkan Şen',pos:'CM',rating:83,nat:'🇹🇷'},{name:'Pablo Batalla',pos:'CM',rating:81,nat:'🇦🇷'},{name:'İbrahim Üzülmez',pos:'CM',rating:80,nat:'🇹🇷'},{name:'Zafer Biryol',pos:'CM',rating:78,nat:'🇹🇷'},
+          {name:'Turgay Bahadır',pos:'RW',rating:80,nat:'🇹🇷'},{name:'Ricardo Batista',pos:'RW',rating:79,nat:'🇧🇷'},
+          {name:'Ozan İpek',pos:'ST',rating:81,nat:'🇹🇷'},{name:'Carlos',pos:'ST',rating:79,nat:'🇧🇷'},
+          {name:'Volkan Şen',pos:'LW',rating:83,nat:'🇹🇷'},{name:'Pablo Batalla',pos:'AM',rating:81,nat:'🇦🇷'}
+        ]}
+    ]},
+
+  // ─── BAŞAKŞEHIR ───
+  { id:'mfk', name:'Başakşehir', short:'BŞK', color:'#ff6600', type:'istanbul',
+    seasons:[
+      { year:'2019-20', badge:'İlk Şampiyonluk', desc:'Visca ve Crivelli ile tarihi şampiyonluk — ŞL\'de Messi karşısında gol.',
+        players:[
+          {name:'Mert Günok',pos:'GK',rating:84,nat:'🇹🇷'},{name:'Günay Güvenç',pos:'GK',rating:74,nat:'🇹🇷'},
+          {name:'Rafael da Silva',pos:'RB',rating:82,nat:'🇧🇷'},{name:'Junior Caiçara',pos:'RB',rating:79,nat:'🇧🇷'},
+          {name:'Epureanu',pos:'CB',rating:81,nat:'🇲🇩'},{name:'Ponck',pos:'CB',rating:79,nat:'🇫🇷'},{name:'Martin Skrtel',pos:'CB',rating:83,nat:'🇸🇰'},
+          {name:'Junior Caiçara',pos:'LB',rating:79,nat:'🇧🇷'},{name:'Aziz Behich',pos:'LB',rating:78,nat:'🇦🇺'},
+          {name:'Mehmet Topal',pos:'CM',rating:82,nat:'🇹🇷'},{name:'Robinho',pos:'CM',rating:83,nat:'🇧🇷'},{name:'Berkay Özcan',pos:'CM',rating:79,nat:'🇩🇪'},{name:'Mossoro',pos:'CM',rating:78,nat:'🇧🇷'},
+          {name:'Edin Visca',pos:'RW',rating:86,nat:'🇧🇦'},{name:'Eljif Elmas',pos:'RW',rating:82,nat:'🇲🇰'},
+          {name:'Frédéric Crivelli',pos:'ST',rating:83,nat:'🇫🇷'},{name:'Demba Ba',pos:'ST',rating:80,nat:'🇸🇳'},
+          {name:'Gael Clichy',pos:'LW',rating:79,nat:'🇫🇷'},{name:'Elia Traorè',pos:'LW',rating:80,nat:'🇫🇷'}
+        ]}
+    ]},
+
+  // ─── KONYASPOR ───
+  { id:'ks', name:'Konyaspor', short:'KNY', color:'#006400', type:'anadolu',
+    seasons:[
+      { year:'2016-17', badge:'Tarihin En İyisi', desc:'Nelson Oliveira ve Vagner Love ile zirve yarışı.',
+        players:[
+          {name:'Serkan Kırıntılı',pos:'GK',rating:80,nat:'🇹🇷'},{name:'Ruud Boffin',pos:'GK',rating:77,nat:'🇧🇪'},
+          {name:'Ömür Erdoğan',pos:'RB',rating:77,nat:'🇹🇷'},{name:'Özer Hurmacı',pos:'RB',rating:78,nat:'🇹🇷'},
+          {name:'Manolis Siopis',pos:'CB',rating:79,nat:'🇬🇷'},{name:'Mehmet Uslu',pos:'CB',rating:77,nat:'🇹🇷'},{name:'Hyun-Jun Suk',pos:'CB',rating:78,nat:'🇰🇷'},
+          {name:'Özer Hurmacı',pos:'LB',rating:78,nat:'🇹🇷'},{name:'Amilton',pos:'LB',rating:77,nat:'🇧🇷'},
+          {name:'Cheick Diabaté',pos:'CM',rating:79,nat:'🇲🇱'},{name:'Rade Dugalić',pos:'CM',rating:78,nat:'🇷🇸'},{name:'Emir Hadžić',pos:'CM',rating:79,nat:'🇧🇦'},{name:'Hyun-Jun Suk',pos:'CM',rating:78,nat:'🇰🇷'},
+          {name:'Vagner Love',pos:'RW',rating:83,nat:'🇧🇷'},{name:'Endri Çekiçi',pos:'RW',rating:78,nat:'🇦🇱'},
+          {name:'Nelson Oliveira',pos:'ST',rating:83,nat:'🇵🇹'},{name:'Ömer Ali Şahiner',pos:'ST',rating:77,nat:'🇹🇷'},
+          {name:'Bryan Rabello',pos:'LW',rating:78,nat:'🇨🇱'},{name:'Amilton',pos:'LW',rating:77,nat:'🇧🇷'}
+        ]}
+    ]},
+
+  // ─── KAYSERİSPOR ───
+  { id:'kys', name:'Kayserispor', short:'KYS', color:'#cc0000', type:'anadolu',
+    seasons:[
+      { year:'2008-09', badge:'Gökdeniz Dönemi', desc:'Gökdeniz Karadeniz\'in zirvesinde Avrupa mücadelesi.',
+        players:[
+          {name:'Mehmet Ekici',pos:'GK',rating:78,nat:'🇩🇪'},{name:'İlhan Öztürk',pos:'GK',rating:74,nat:'🇹🇷'},
+          {name:'Bora Güçlü',pos:'RB',rating:76,nat:'🇹🇷'},{name:'Ata Can Taşçı',pos:'RB',rating:77,nat:'🇹🇷'},
+          {name:'Goran Gavrančić',pos:'CB',rating:81,nat:'🇷🇸'},{name:'Ata Can Taşçı',pos:'CB',rating:77,nat:'🇹🇷'},{name:'Radoslav Zabavnik',pos:'CB',rating:78,nat:'🇸🇰'},
+          {name:'Radoslav Zabavnik',pos:'LB',rating:78,nat:'🇸🇰'},{name:'Muzaffer Bilazer',pos:'LB',rating:75,nat:'🇹🇷'},
+          {name:'Marcelo Trotta',pos:'CM',rating:79,nat:'🇦🇷'},{name:'Tiago Gomes',pos:'CM',rating:80,nat:'🇧🇷'},{name:'Turan Özçiğdem',pos:'CM',rating:77,nat:'🇹🇷'},{name:'Mehmet Yozgatlı',pos:'CM',rating:76,nat:'🇹🇷'},
+          {name:'Gökdeniz Karadeniz',pos:'RW',rating:87,nat:'🇹🇷'},{name:'Mehmet Yozgatlı',pos:'RW',rating:76,nat:'🇹🇷'},
+          {name:'Musa Aydın',pos:'ST',rating:80,nat:'🇹🇷'},{name:'Hasan Sas',pos:'ST',rating:78,nat:'🇹🇷'},
+          {name:'Roland Lamah',pos:'LW',rating:79,nat:'🇧🇪'},{name:'Hasan Kabze',pos:'LW',rating:76,nat:'🇹🇷'}
+        ]}
+    ]},
+
+  // ─── GAZİANTEPSPOR ───
+  { id:'gzt', name:'Gaziantepspor', short:'GZT', color:'#cc0000', type:'anadolu',
+    seasons:[
+      { year:'1996-97', badge:'Güneydoğudan Zirveye', desc:'Tümer Metin\'in erken dönem yılları — güneyin gücü.',
+        players:[
+          {name:'Tuncay Coşkun',pos:'GK',rating:77,nat:'🇹🇷'},{name:'Hakan Arıkan',pos:'GK',rating:73,nat:'🇹🇷'},
+          {name:'Sedat Bayrak',pos:'RB',rating:75,nat:'🇹🇷'},{name:'Bülent Bölükbaşı',pos:'RB',rating:74,nat:'🇹🇷'},
+          {name:'Oğuz Çetin',pos:'CB',rating:78,nat:'🇹🇷'},{name:'Hüseyin Yılmaz',pos:'CB',rating:77,nat:'🇹🇷'},{name:'Engin İpekoğlu',pos:'CB',rating:75,nat:'🇹🇷'},
+          {name:'Engin İpekoğlu',pos:'LB',rating:75,nat:'🇹🇷'},{name:'Bülent Korkmaz',pos:'LB',rating:78,nat:'🇹🇷'},
+          {name:'Tümer Metin',pos:'CM',rating:84,nat:'🇹🇷'},{name:'Hayrettin Yerlikaya',pos:'CM',rating:78,nat:'🇹🇷'},{name:'Cevher Tokatlı',pos:'CM',rating:76,nat:'🇹🇷'},{name:'Volkan Arslan',pos:'CM',rating:75,nat:'🇹🇷'},
+          {name:'Metin Tekin',pos:'RW',rating:79,nat:'🇹🇷'},{name:'Sabri Dursun',pos:'RW',rating:76,nat:'🇹🇷'},
+          {name:'Levent Şahin',pos:'ST',rating:79,nat:'🇹🇷'},{name:'Ceyhun Eriş',pos:'ST',rating:77,nat:'🇹🇷'},
+          {name:'Uğur Tütüneker',pos:'LW',rating:76,nat:'🇹🇷'},{name:'Erhan Albayrak',pos:'LW',rating:75,nat:'🇹🇷'}
+        ]}
+    ]},
+
+  // ─── ANTALYASPOR ───
+  { id:'ant', name:'Antalyaspor', short:'ANT', color:'#ff0000', type:'anadolu',
+    seasons:[
+      { year:'2020-21', badge:'Podolski & Naldo', desc:'Podolski ve Naldo ile güçlü Akdeniz sezonu.',
+        players:[
+          {name:'Gökhan Akkan',pos:'GK',rating:80,nat:'🇹🇷'},{name:'Kamil Ahmet Çörekçi',pos:'GK',rating:75,nat:'🇹🇷'},
+          {name:'Haji Wright',pos:'RB',rating:77,nat:'🇺🇸'},{name:'Emre Taşdemir',pos:'RB',rating:76,nat:'🇹🇷'},
+          {name:'Naldo',pos:'CB',rating:82,nat:'🇧🇷'},{name:'Steven Caulker',pos:'CB',rating:79,nat:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{name:'Riad Bajić',pos:'CB',rating:77,nat:'🇧🇦'},
+          {name:'Emre Taşdemir',pos:'LB',rating:76,nat:'🇹🇷'},{name:'Fredy Montero',pos:'LB',rating:77,nat:'🇨🇴'},
+          {name:'Lukas Podolski',pos:'CM',rating:83,nat:'🇩🇪'},{name:'Nazim Sangare',pos:'CM',rating:78,nat:'🇫🇷'},{name:'Adis Jahovic',pos:'CM',rating:79,nat:'🇲🇰'},{name:'Fredy Montero',pos:'CM',rating:78,nat:'🇨🇴'},
+          {name:'Amilton',pos:'RW',rating:80,nat:'🇧🇷'},{name:'Haji Wright',pos:'RW',rating:77,nat:'🇺🇸'},
+          {name:'Riad Bajić',pos:'ST',rating:80,nat:'🇧🇦'},{name:'Adis Jahovic',pos:'ST',rating:80,nat:'🇲🇰'},
+          {name:'Dever Orgill',pos:'LW',rating:78,nat:'🇯🇲'},{name:'Podolski',pos:'LW',rating:83,nat:'🇩🇪'}
+        ]}
+    ]},
+
+  // ─── ANADOLU EFSANELERİ KARMASI ───
+  { id:'anadolu', name:'Anadolu Efsaneleri', short:'AEK', color:'#8B4513', type:'karma',
+    seasons:[
+      { year:'Tüm Zamanlar', badge:'Anadoludan Zirveye', desc:'Sivastan Kayseriye, Bursadan Antalyaya — Anadolunun tüm zamanlar 11i.',
+        players:[
+          {name:'Dimitar Ivankov',pos:'GK',rating:84,nat:'🇧🇬'},
+          {name:'Muammer Yıldırım',pos:'GK',rating:80,nat:'🇹🇷'},
+          {name:'Hüseyin Yıldırım',pos:'GK',rating:78,nat:'🇹🇷'},
+          {name:'Serkan Kırıntılı',pos:'GK',rating:80,nat:'🇹🇷'},
+          {name:'Hüseyin Köybaşı',pos:'RB',rating:79,nat:'🇹🇷'},
+          {name:'Caner Osmanpaşa',pos:'RB',rating:77,nat:'🇹🇷'},
+          {name:'Tabata',pos:'RB',rating:79,nat:'🇧🇷'},
+          {name:'Max-Alain Gradel',pos:'RB',rating:82,nat:'🇨🇮'},
+          {name:'Naldo',pos:'CB',rating:83,nat:'🇧🇷'},
+          {name:'Goran Gavrančić',pos:'CB',rating:81,nat:'🇷🇸'},
+          {name:'Steven Caulker',pos:'CB',rating:79,nat:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},
+          {name:'Tevfik Kömürcü',pos:'CB',rating:81,nat:'🇹🇷'},
+          {name:'Manolis Siopis',pos:'CB',rating:79,nat:'🇬🇷'},
+          {name:'Ziya Erdal',pos:'CB',rating:77,nat:'🇹🇷'},
+          {name:'David Yablonsky',pos:'CB',rating:79,nat:'🇫🇷'},
+          {name:'Fouad Fajr',pos:'LB',rating:81,nat:'🇲🇦'},
+          {name:'Özer Hurmacı',pos:'LB',rating:79,nat:'🇹🇷'},
+          {name:'Cevher Tokatlı',pos:'LB',rating:77,nat:'🇹🇷'},
+          {name:'Adriano',pos:'LB',rating:80,nat:'🇧🇷'},
+          {name:'Tümer Metin',pos:'CM',rating:85,nat:'🇹🇷'},
+          {name:'Hami Mandıralı',pos:'CM',rating:86,nat:'🇹🇷'},
+          {name:'Claudemir',pos:'CM',rating:82,nat:'🇧🇷'},
+          {name:'Emre Kılınç',pos:'CM',rating:82,nat:'🇹🇷'},
+          {name:'Volkan Şen',pos:'CM',rating:83,nat:'🇹🇷'},
+          {name:'Pablo Batalla',pos:'CM',rating:81,nat:'🇦🇷'},
+          {name:'Qazim Laçi',pos:'CM',rating:80,nat:'🇦🇱'},
+          {name:'Hervé Tum',pos:'CM',rating:80,nat:'🇨🇲'},
+          {name:'Hürşut Meriç',pos:'CM',rating:79,nat:'🇹🇷'},
+          {name:'Aatif Chahechouhe',pos:'CM',rating:79,nat:'🇲🇦'},
+          {name:'Didier Zokora',pos:'CM',rating:84,nat:'🇨🇮'},
+          {name:'Mert Hakan Yandaş',pos:'CM',rating:81,nat:'🇹🇷'},
+          {name:'Gökdeniz Karadeniz',pos:'RW',rating:87,nat:'🇹🇷'},
+          {name:'Max-Alain Gradel',pos:'RW',rating:83,nat:'🇨🇮'},
+          {name:'Arouna Koné',pos:'RW',rating:80,nat:'🇨🇮'},
+          {name:'Turgay Bahadır',pos:'RW',rating:80,nat:'🇹🇷'},
+          {name:'Olcan Adın',pos:'RW',rating:79,nat:'🇹🇷'},
+          {name:'Vagner Love',pos:'RW',rating:83,nat:'🇧🇷'},
+          {name:'Nelson Oliveira',pos:'ST',rating:83,nat:'🇵🇹'},
+          {name:'Burak Yılmaz',pos:'ST',rating:87,nat:'🇹🇷'},
+          {name:'Fatih Tekke',pos:'ST',rating:85,nat:'🇹🇷'},
+          {name:'Musa Aydın',pos:'ST',rating:80,nat:'🇹🇷'},
+          {name:'Ozan İpek',pos:'ST',rating:81,nat:'🇹🇷'},
+          {name:'Leandro',pos:'ST',rating:79,nat:'🇧🇷'},
+          {name:'Adis Jahovic',pos:'ST',rating:80,nat:'🇲🇰'},
+          {name:'Ahmet Suat Özyazıcı',pos:'AM',rating:88,nat:'🇹🇷'},
+          {name:'Rıdvan Dilmen',pos:'AM',rating:84,nat:'🇹🇷'},
+          {name:'Tümer Metin',pos:'AM',rating:85,nat:'🇹🇷'},
+          {name:'Emre Kılınç',pos:'LW',rating:82,nat:'🇹🇷'},
+          {name:'Dever Orgill',pos:'LW',rating:79,nat:'🇯🇲'},
+          {name:'Olarenwaju Kayode',pos:'LW',rating:80,nat:'🇳🇬'},
+          {name:'Endri Çekiçi',pos:'LW',rating:78,nat:'🇦🇱'},
+          {name:'Sedat Sözüer',pos:'LW',rating:77,nat:'🇹🇷'}
+        ]},
+      { year:'2010lar Karması', badge:'Modern Anadolu', desc:'2010larin en güçlü Anadolu oyuncuları tek kadro.',
+        players:[
+          {name:'Dimitar Ivankov',pos:'GK',rating:84,nat:'🇧🇬'},
+          {name:'Muammer Yıldırım',pos:'GK',rating:80,nat:'🇹🇷'},
+          {name:'Serkan Kırıntılı',pos:'GK',rating:80,nat:'🇹🇷'},
+          {name:'Max-Alain Gradel',pos:'RB',rating:82,nat:'🇨🇮'},
+          {name:'Tabata',pos:'RB',rating:79,nat:'🇧🇷'},
+          {name:'Hüseyin Köybaşı',pos:'RB',rating:79,nat:'🇹🇷'},
+          {name:'Naldo',pos:'CB',rating:83,nat:'🇧🇷'},
+          {name:'David Yablonsky',pos:'CB',rating:79,nat:'🇫🇷'},
+          {name:'Goran Gavrančić',pos:'CB',rating:81,nat:'🇷🇸'},
+          {name:'Manolis Siopis',pos:'CB',rating:79,nat:'🇬🇷'},
+          {name:'Fouad Fajr',pos:'LB',rating:81,nat:'🇲🇦'},
+          {name:'Özer Hurmacı',pos:'LB',rating:79,nat:'🇹🇷'},
+          {name:'Adriano',pos:'LB',rating:80,nat:'🇧🇷'},
+          {name:'Claudemir',pos:'CM',rating:82,nat:'🇧🇷'},
+          {name:'Emre Kılınç',pos:'CM',rating:82,nat:'🇹🇷'},
+          {name:'Mert Hakan Yandaş',pos:'CM',rating:81,nat:'🇹🇷'},
+          {name:'Volkan Şen',pos:'CM',rating:83,nat:'🇹🇷'},
+          {name:'Qazim Laçi',pos:'CM',rating:80,nat:'🇦🇱'},
+          {name:'Hervé Tum',pos:'CM',rating:80,nat:'🇨🇲'},
+          {name:'Hürşut Meriç',pos:'CM',rating:79,nat:'🇹🇷'},
+          {name:'Didier Zokora',pos:'CM',rating:84,nat:'🇨🇮'},
+          {name:'Aatif Chahechouhe',pos:'CM',rating:79,nat:'🇲🇦'},
+          {name:'Gökdeniz Karadeniz',pos:'RW',rating:87,nat:'🇹🇷'},
+          {name:'Max-Alain Gradel',pos:'RW',rating:83,nat:'🇨🇮'},
+          {name:'Vagner Love',pos:'RW',rating:83,nat:'🇧🇷'},
+          {name:'Nelson Oliveira',pos:'ST',rating:83,nat:'🇵🇹'},
+          {name:'Adis Jahovic',pos:'ST',rating:80,nat:'🇲🇰'},
+          {name:'Musa Aydın',pos:'ST',rating:80,nat:'🇹🇷'},
+          {name:'Olarenwaju Kayode',pos:'LW',rating:80,nat:'🇳🇬'},
+          {name:'Emre Kılınç',pos:'LW',rating:82,nat:'🇹🇷'},
+          {name:'Endri Çekiçi',pos:'LW',rating:78,nat:'🇦🇱'},
+          {name:'Ahmet Suat Özyazıcı',pos:'AM',rating:88,nat:'🇹🇷'},
+          {name:'Rıdvan Dilmen',pos:'AM',rating:84,nat:'🇹🇷'}
+        ]}
+    ]}
+];
+
+// ═══════════════════════════════════════════════
+// FORMATION
+// ═══════════════════════════════════════════════
+const FORMATION = [
+  [{pos:'GK', label:'Kaleci'}],
+  [{pos:'RB', label:'Sağ Bek'},{pos:'CB', label:'Stoper'},{pos:'CB', label:'Stoper'},{pos:'LB', label:'Sol Bek'}],
+  [{pos:'CM', label:'Orta Saha'},{pos:'CM', label:'Orta Saha'},{pos:'CM', label:'Orta Saha'}],
+  [{pos:'RW', label:'Sağ Kanat'},{pos:'ST', label:'Santrafor'},{pos:'LW', label:'Sol Kanat'}]
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let G = {
+  mode: 'classic',
+  // lineup[key] = { name, pos, rating, team, season }  — each slot has its own source
+  lineup: {},
+  // active slot
+  activeSlot: null,
+  activePos: null,
+  // current draw for active slot
+  slotDraw: null,   // { team, season }
+};
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  updateNav(id);
+  window.scrollTo(0, 0);
+  if (id === 's-sim') startSim();
+}
+
+function navTo(id) { go(id); }
+
+function updateNav(id) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const map = {'s-home':'nav-home','s-build':'nav-roll','s-info':'nav-info'};
+  if (map[id]) document.getElementById(map[id]).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+// MODE
+// ═══════════════════════════════════════════════
+function selectMode(m) {
+  G.mode = m;
+  document.getElementById('mc-classic').classList.toggle('selected', m === 'classic');
+  document.getElementById('mc-blind').classList.toggle('selected', m === 'blind');
+}
+
+function startBuild() {
+  G.lineup = {};
+  G.activeSlot = null;
+  G.slotDraw = null;
+  go('s-build');
+  document.getElementById('build-mode-text').textContent = G.mode === 'classic' ? '👁️ KLASİK' : '🙈 HAFIZADAN';
+  document.getElementById('sp-rolling').style.display = 'none';
+  document.getElementById('sp-drawn').style.display = 'none';
+  document.getElementById('slot-panel-empty').style.display = 'flex';
+  renderPitch();
+}
+
+// ═══════════════════════════════════════════════
+// PITCH RENDER
+// ═══════════════════════════════════════════════
+function renderPitch() {
+  const grid = document.getElementById('lineup-grid');
+  const filled = Object.keys(G.lineup).length;
+  document.getElementById('prog-fill').style.width = (filled / 11 * 100) + '%';
+  document.getElementById('prog-count').textContent = filled + '/11';
+  document.getElementById('sim-ready').style.display = filled === 11 ? 'block' : 'none';
+  if (filled === 11) {
+    document.getElementById('build-subtitle').textContent = '11 tamamlandı — simüle etmeye hazır!';
+  }
+
+  grid.innerHTML = '';
+  FORMATION.forEach((row, ri) => {
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'lineup-row';
+    row.forEach((slot, si) => {
+      const key = ri + '-' + si;
+      const player = G.lineup[key];
+      const isActive = G.activeSlot === key;
+      const div = document.createElement('div');
+      div.className = 'slot';
+
+      // Jersey color from the player's own team draw
+      const teamColor = player && player.teamColor ? player.teamColor : null;
+      const jerseyStyle = player
+        ? `background:${teamColor === '#1a1a1a' ? '#555' : (teamColor || '#888')};border-color:rgba(255,255,255,.5)`
+        : '';
+
+      div.innerHTML = `
+        <div class="slot-jersey ${player ? 'filled' : ''} ${isActive ? 'active-slot' : ''}"
+             style="${jerseyStyle}">
+          ${player
+            ? `<span style="font-size:10px;font-weight:700;color:#fff;line-height:1.2;text-align:center;padding:2px">${player.name.split(' ').pop().substring(0,7)}</span>
+               <span class="rating-badge">${player.rating}</span>`
+            : `<span class="slot-jersey-icon">+</span>`}
+        </div>
+        <div class="slot-pos">${slot.pos}</div>
+        <div class="slot-name">${player ? player.name.split(' ').pop() : slot.label}</div>`;
+
+      div.onclick = () => activateSlot(key, slot.pos);
+      rowDiv.appendChild(div);
+    });
+    grid.appendChild(rowDiv);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// SLOT ACTIVATION — opens panel, auto-rolls
+// ═══════════════════════════════════════════════
+function activateSlot(key, pos) {
+  // Block switching to another slot while panel is open (unless clicking same slot)
+  if (G.activeSlot && G.activeSlot !== key) {
+    // Show hint and shake
+    const hint = document.getElementById('locked-hint');
+    hint.style.display = 'block';
+    const left = document.getElementById('build-left');
+    left.style.animation = 'none';
+    void left.offsetWidth;
+    left.style.animation = 'shake .3s ease';
+    setTimeout(() => { hint.style.display = 'none'; }, 2000);
+    return;
+  }
+  // Clicking same slot again = close
+  if (G.activeSlot === key) {
+    closeSlotPanel();
+    return;
+  }
+  G.activeSlot = key;
+  G.activePos = pos;
+  document.getElementById('slot-panel-empty').style.display = 'none';
+  document.getElementById('sp-search').value = '';
+  renderPitch();
+  rollForSlot();
+}
+
+function rollForSlot() {
+  document.getElementById('slot-panel-empty').style.display = 'none';
+  document.getElementById('sp-rolling').style.display = 'block';
+  document.getElementById('sp-drawn').style.display = 'none';
+  document.getElementById('sp-pos-label').textContent = G.activePos;
+
+  const die = document.getElementById('slot-die');
+  die.classList.remove('rolling');
+  void die.offsetWidth;
+  die.classList.add('rolling');
+
+  const icons = ['⚽','🏆','🎯','🥅','👟','🌟','🦅','💫'];
+  let t = 0;
+  const iv = setInterval(() => { die.textContent = icons[t++ % icons.length]; }, 70);
+
+  setTimeout(() => {
+    clearInterval(iv);
+    die.textContent = '⚽';
+
+    const pool = [];
+    TEAMS.forEach(tm => tm.seasons.forEach(s => pool.push({ team: tm, season: s })));
+    // Avoid same as previous slot draw
+    const prevKey = G.slotDraw ? G.slotDraw.team.id + '-' + G.slotDraw.season.year : null;
+    const src = pool.filter(p => (p.team.id + '-' + p.season.year) !== prevKey);
+    const pick = (src.length > 0 ? src : pool)[Math.floor(Math.random() * (src.length || pool.length))];
+    G.slotDraw = pick;
+
+    showSlotDraw();
+  }, 600);
+}
+
+function rerollSlot() {
+  rollForSlot();
+}
+
+function showSlotDraw() {
+  const { team, season } = G.slotDraw;
+  document.getElementById('sp-rolling').style.display = 'none';
+  document.getElementById('sp-drawn').style.display = 'block';
+
+  document.getElementById('sp-team-name').textContent = team.name;
+  document.getElementById('sp-team-name').style.color = team.color === '#1a1a1a' ? '#f0f0f0' : team.color;
+  document.getElementById('sp-season').textContent = season.year;
+  document.getElementById('sp-badge').textContent = season.badge;
+  document.getElementById('sp-draw-card').style.setProperty('--team-color', team.color);
+  document.getElementById('sp-pos-badge').textContent = G.activePos;
+
+  renderSlotPlayerList('');
+  // Scroll to panel
+
+}
+
+function renderSlotPlayerList(q) {
+  if (!G.slotDraw) return;
+  const { season } = G.slotDraw;
+  const pos = G.activePos;
+  const takenNames = Object.entries(G.lineup)
+    .filter(([k]) => k !== G.activeSlot)
+    .map(([, p]) => p.name);
+
+  const compat = {
+    GK:['GK'],
+    RB:['RB','CB','LB'], CB:['CB','RB','LB'], LB:['LB','CB','RB'],
+    CM:['CM','AM','DM','RW','LW'], AM:['AM','CM','RW','LW'],
+    RW:['RW','AM','CM','LW'], LW:['LW','AM','CM','RW'],
+    ST:['ST','RW','LW','AM','CM'], DM:['DM','CM']
+  };
+  const ok = compat[pos] || [pos];
+  let pool = season.players.filter(p => ok.includes(p.pos));
+  if (pool.length < 3) pool = season.players;
+  if (q) pool = season.players.filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
+
+  const isBlind = G.mode === 'blind';
+  document.getElementById('sp-player-list').innerHTML = pool.map(p => {
+    const taken = takenNames.includes(p.name);
+    const initials = p.name.split(' ').map(w => w[0]).slice(0,2).join('');
+    const hue = p.name.charCodeAt(0) * 11 % 360;
+    return `<div class="p-item ${taken ? 'taken' : ''}"
+                 onclick="pickSlotPlayer('${p.name.replace(/'/g,"\\'")}','${p.pos}',${p.rating})">
+      <div class="p-avatar" style="background:hsl(${hue},40%,25%);color:hsl(${hue},60%,70%)">${initials}</div>
+      <div class="p-info">
+        <div class="p-name">${p.name} ${p.nat}</div>
+        <div class="p-sub">${p.pos}${taken ? ' · Seçildi' : ''}</div>
+      </div>
+      <div class="p-rating">${isBlind ? '?' : p.rating}</div>
+    </div>`;
+  }).join('') || '<div style="padding:14px;color:var(--muted);font-size:13px">Sonuç bulunamadı</div>';
+}
+
+function filterSlotPicker(q) {
+  renderSlotPlayerList(q);
+}
+
+function pickSlotPlayer(name, pos, rating) {
+  if (!G.slotDraw) return;
+  G.lineup[G.activeSlot] = {
+    name, pos, rating,
+    teamColor: G.slotDraw.team.color,
+    teamName: G.slotDraw.team.name,
+    seasonYear: G.slotDraw.season.year
+  };
+  closeSlotPanel();
+  renderPitch();
+  // Scroll pitch back into view
+  setTimeout(() => document.getElementById('lineup-grid').scrollIntoView({ behavior:'smooth', block:'center' }), 100);
+}
+
+function closeSlotPanel() {
+  G.activeSlot = null;
+  G.activePos = null;
+  document.getElementById('sp-rolling').style.display = 'none';
+  document.getElementById('sp-drawn').style.display = 'none';
+  document.getElementById('slot-panel-empty').style.display = 'flex';
+  document.getElementById('locked-hint').style.display = 'none';
+  renderPitch();
+}
+
+
+
+// ═══════════════════════════════════════════════
+// SIMULATION
+// ═══════════════════════════════════════════════
+const TIPS = [
+  'Ortalama rating hesaplanıyor…',
+  'Rakip kadroları oluşturuluyor…',
+  '38 maç simüle ediliyor…',
+  'İstatistikler derleniyor…',
+  'Efsane anlar yazılıyor…'
+];
+
+async function startSim() {
+  if (Object.keys(G.lineup).length < 11) { go('s-build'); return; }
+
+  // Build a label from the lineup sources
+  const sources = [...new Set(Object.values(G.lineup).map(p => p.teamName))];
+  const title = sources.length === 1 ? sources[0] : 'Karma Kadro';
+  const sub = sources.length <= 3 ? sources.join(' · ') : sources.slice(0,3).join(' · ') + '…';
+  document.getElementById('sim-title').textContent = title;
+  document.getElementById('sim-sub').textContent = sub;
+  document.getElementById('sim-loading').style.display = 'block';
+  document.getElementById('sim-results').style.display = 'none';
+
+  let tipIdx = 0;
+  const tipEl = document.getElementById('loading-tip');
+  const tipIv = setInterval(() => { tipEl.textContent = TIPS[tipIdx++ % TIPS.length]; }, 1400);
+
+  const players = Object.values(G.lineup);
+  const avgRating = Math.round(players.reduce((a, p) => a + p.rating, 0) / players.length);
+  const lineupStr = players.map(p => p.name).join(', ');
+
+  const prompt = `Sen Türkiye Süper Ligi simülatörüsün. Aşağıdaki bilgilere göre 38 maçlık bir sezon simüle et.
+
+Kadro: ${title} (karma)
+Kaynak Sezonlar: ${sub}
+11: ${lineupStr}
+Ortalama Rating: ${avgRating}
+
+SADECE JSON döndür (açıklama yok, markdown yok, kod bloğu yok):
+{"matches":[{"round":1,"opponent":"TakımAdı","gf":2,"ga":0,"result":"W"},...38 maç...],"topscorer":{"name":"OyuncuAdı","goals":18},"assist_leader":{"name":"OyuncuAdı","assists":12},"narrative":"3-4 cümle: bu sezonun öne çıkan anları, dramatik maçlar, efsane performanslar — Türkçe yaz"}
+
+Kurallar:
+- Tüm rakipler Türkiye Süper Ligi takımları olsun (Galatasaray, Fenerbahçe, Beşiktaş, Trabzonspor, Sivasspor, Antalyaspor, Kasımpaşa, Alanyaspor, Kayserispor, Konyaspor, Göztepe, Adana Demirspor, Samsunspor, Hatayspor, Rizespor, Ankaragücü, Giresunspor, Fatih Karagümrük)
+- Rating ${avgRating} ise: 87+ → %80 galibiyet, 3-4 beraberlik, max 1-2 mağlubiyet; 83-86 → %68 galibiyet; 79-82 → %58 galibiyet; altı → %45 galibiyet
+- Golcü ve asist lider, kadrodaki oyunculardan olsun`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2500,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await resp.json();
+    const raw = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const sim = JSON.parse(clean);
+    clearInterval(tipIv);
+    showResults(sim);
+  } catch (e) {
+    clearInterval(tipIv);
+    showResults(generateLocalSim(avgRating, players));
+  }
+}
+
+function generateLocalSim(avgRating, players) {
+  const opponents = ['Galatasaray','Fenerbahçe','Beşiktaş','Trabzonspor','Sivasspor','Antalyaspor','Kasımpaşa','Alanyaspor','Kayserispor','Konyaspor','Göztepe','Adana DS','Samsunspor','Hatayspor','Rizespor','Ankaragücü','Giresunspor','Fatih KG'];
+  const pool = [...opponents, ...opponents];
+  const matches = [];
+  for (let i = 1; i <= 38; i++) {
+    const opp = pool[Math.floor(Math.random() * pool.length)];
+    const r = Math.random();
+    const wr = avgRating >= 87 ? .80 : avgRating >= 83 ? .68 : avgRating >= 79 ? .58 : .45;
+    let gf, ga, result;
+    if (r < wr) { result = 'W'; gf = Math.floor(Math.random() * 3) + 1; ga = Math.random() < .38 ? 0 : Math.floor(Math.random() * 2); }
+    else if (r < wr + .18) { result = 'D'; gf = Math.floor(Math.random() * 2) + 1; ga = gf; }
+    else { result = 'L'; ga = Math.floor(Math.random() * 2) + 1; gf = Math.random() < .38 ? 0 : Math.floor(Math.random() * ga); }
+    matches.push({ round: i, opponent: opp, gf, ga, result });
+  }
+  const scorer = players.find(p => p.pos === 'ST') || players.find(p => ['RW','LW','AM'].includes(p.pos)) || players[0];
+  const assister = players.find(p => ['AM','CM','RW'].includes(p.pos)) || players[1];
+  return {
+    matches,
+    topscorer: { name: scorer.name, goals: Math.floor(avgRating / 5) + Math.floor(Math.random() * 8) + 4 },
+    assist_leader: { name: assister.name, assists: Math.floor(Math.random() * 12) + 5 },
+    narrative: 'Takım bu sezonu büyük bir kararlılıkla oynadı. Savunmanın sağlamlığı ve hücumun etkinliği birleşince rakipler çok güçlük çekti. Kritik deplasman galibiyetleri sezonun dönüm noktaları oldu.'
+  };
+}
+
+function showResults(sim) {
+  document.getElementById('sim-loading').style.display = 'none';
+  document.getElementById('sim-results').style.display = 'block';
+
+  const m = sim.matches;
+  const w = m.filter(x => x.result === 'W').length;
+  const d = m.filter(x => x.result === 'D').length;
+  const l = m.filter(x => x.result === 'L').length;
+  const gf = m.reduce((a, x) => a + x.gf, 0);
+  const ga = m.reduce((a, x) => a + x.ga, 0);
+  const pts = w * 3 + d;
+  const perfect = w === 38;
+
+  // Match grid
+  const gridEl = document.getElementById('match-grid');
+  gridEl.innerHTML = m.map(x =>
+    `<div class="match-dot ${x.result}" data-tip="H${x.round} ${x.opponent} ${x.gf}-${x.ga}"></div>`
+  ).join('');
+
+  // Stats
+  document.getElementById('stat-row').innerHTML = `
+    <div class="stat-box"><div class="stat-n" style="color:var(--green)">${w}</div><div class="stat-l">Galibiyet</div></div>
+    <div class="stat-box"><div class="stat-n" style="color:var(--gold)">${d}</div><div class="stat-l">Beraberlik</div></div>
+    <div class="stat-box"><div class="stat-n" style="color:var(--red)">${l}</div><div class="stat-l">Mağlubiyet</div></div>
+    <div class="stat-box"><div class="stat-n">${pts}</div><div class="stat-l">Puan</div></div>`;
+
+  // Narrative
+  document.getElementById('narrative-box').textContent = sim.narrative;
+
+  // Feed — notable matches
+  const notable = m.filter(x => x.gf >= 3 || x.result !== 'W' || x.ga >= 2).slice(0, 15);
+  document.getElementById('match-feed').innerHTML = notable.map(x => {
+    const cls = x.result === 'W' ? 'feed-win' : x.result === 'D' ? 'feed-draw' : 'feed-loss';
+    const icon = x.result === 'W' ? '●' : x.result === 'D' ? '○' : '✕';
+    return `<div><span class="${cls}">${icon}</span> <span class="feed-name">H${x.round} · ${x.opponent}</span> <span style="color:var(--hint)">${x.gf}–${x.ga}</span></div>`;
+  }).join('');
+
+  // Final
+  let trophy, msg;
+  if (perfect) { trophy = '🏆🏆🏆'; msg = 'TARİHİ REKOR! 38 maç, 38 galibiyet — Süper Lig tarihi yazıldı!'; }
+  else if (pts >= 80) { trophy = '🏆'; msg = `Ezici şampiyonluk! ${pts} puan tarihsel bir rekor.`; }
+  else if (pts >= 70) { trophy = '🏆'; msg = `Şampiyon! ${pts} puanla Süper Lig tahtına oturuldu.`; }
+  else if (pts >= 60) { trophy = '🥈'; msg = `${pts} puan. Şampiyonluk yarışında ama son adım atılamadı.`; }
+  else { trophy = '😤'; msg = `${pts} puan. Bu kadro daha iyisini hak ediyordu.`; }
+
+  document.getElementById('final-section').innerHTML = `
+    <div class="final-banner">
+      <div class="final-trophy">${trophy}</div>
+      <div class="final-record ${perfect ? 'perfect' : ''}">${w}–${38 - w}</div>
+      <div class="final-tag">${msg}</div>
+      <div class="final-wdl">
+        <span class="wdl-w">${w}G</span>
+        <span class="wdl-d">${d}B</span>
+        <span class="wdl-l">${l}M</span>
+      </div>
+      <div class="final-scorer">
+        ⚽ <strong>${sim.topscorer.name}</strong> — ${sim.topscorer.goals} gol
+        ${sim.assist_leader ? `&nbsp;·&nbsp; 🎯 <strong>${sim.assist_leader.name}</strong> — ${sim.assist_leader.assists} asist` : ''}
+      </div>
+      <div style="font-size:12px;color:var(--hint);margin-top:8px">${gf} gol atıldı · ${ga} gol yenildi</div>
+    </div>`;
+}
+
+function resetFull() {
+  G.lineup = {};
+  G.activeSlot = null;
+  G.activePos = null;
+  G.slotDraw = null;
+  go('s-home');
+}
+
+</script>
+</body>
+</html>
