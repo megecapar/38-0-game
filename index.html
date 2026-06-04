@@ -801,7 +801,7 @@ const TEAMS = [
           {name:'Emre Kılınç',pos:'CM',rating:82,nat:'🇹🇷'},
           {name:'Mert Hakan Yandaş',pos:'CM',rating:81,nat:'🇹🇷'},
           {name:'Volkan Şen',pos:'CM',rating:83,nat:'🇹🇷'},
-          {name:'Qazim Laçi',pos:'CM',rating:80,nat:'🇦🇱'},
+          {name:'Qazim Laçi',pos:'CM',rating:99,nat:'🇦🇱'},
           {name:'Hervé Tum',pos:'CM',rating:80,nat:'🇨🇲'},
           {name:'Hürşut Meriç',pos:'CM',rating:79,nat:'🇹🇷'},
           {name:'Didier Zokora',pos:'CM',rating:84,nat:'🇨🇮'},
@@ -1026,17 +1026,8 @@ function renderSlotPlayerList(q) {
     .filter(([k]) => k !== G.activeSlot)
     .map(([, p]) => p.name);
 
-  const compat = {
-    GK:['GK'],
-    RB:['RB','CB','LB'], CB:['CB','RB','LB'], LB:['LB','CB','RB'],
-    CM:['CM','AM','DM','RW','LW'], AM:['AM','CM','RW','LW'],
-    RW:['RW','AM','CM','LW'], LW:['LW','AM','CM','RW'],
-    ST:['ST','RW','LW','AM','CM'], DM:['DM','CM']
-  };
-  const ok = compat[pos] || [pos];
-  let pool = season.players.filter(p => ok.includes(p.pos));
-  if (pool.length === 0) pool = season.players;
-  if (q) pool = pool.filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
+  const pool = season.players.filter(p => p.pos === pos);
+  const filtered = q ? pool.filter(p => p.name.toLowerCase().includes(q.toLowerCase())) : pool;
 
   const isBlind = G.mode === 'blind';
   document.getElementById('sp-player-list').innerHTML = pool.map(p => {
