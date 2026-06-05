@@ -333,7 +333,7 @@ body{max-width:960px}
         <div id="sp-drawn" style="display:none">
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:.5rem">
             <span id="sp-pos-badge" style="background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:3px"></span>
-            <button onclick="rerollSlot()" style="margin-left:auto;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--muted);font-size:11px;cursor:pointer">🎲 Tekrar</button>
+            <button id="reroll-btn" onclick="rerollSlot()" style="margin-left:auto;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--muted);font-size:11px;cursor:pointer">🎲 Tekrar (3)</button>
           </div>
           <div class="draw-card" id="sp-draw-card" style="margin-bottom:.5rem;padding:10px 10px 10px 14px">
             <div class="draw-team" id="sp-team-name" style="font-size:20px"></div>
@@ -368,35 +368,6 @@ body{max-width:960px}
 
     <div id="sim-ready" style="display:none;margin-top:.75rem">
       <button class="btn btn-red" onclick="go('s-sim')">🏆 Sezonu Simüle Et →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════ SIMULATION ═══════════════ -->
-<div class="screen" id="s-sim">
-  <div style="padding:1.5rem">
-    <button class="back-btn" onclick="go('s-build')" style="margin-bottom:1.5rem;display:inline-block">← Geri</button>
-    <div class="sim-header">
-      <div>
-        <div class="sim-title" id="sim-title">Sezon Simülasyonu</div>
-        <div id="sim-sub" style="font-size:13px;color:var(--muted);margin-top:6px">Kadronuzu seçin ve simülasyonu başlatın.</div>
-      </div>
-    </div>
-
-    <div id="sim-loading" class="loading-block">
-      <div>
-        <span class="spinner"></span>Simüle ediliyor...
-      </div>
-      <div id="loading-tip" class="loading-tip">Ortalama rating hesaplanıyor…</div>
-    </div>
-
-    <div id="sim-results" style="display:none">
-      <div class="match-grid-label">38 Maçlık Sezon</div>
-      <div id="match-grid" class="match-grid"></div>
-      <div id="stat-row" class="stat-row"></div>
-      <div class="match-feed" id="match-feed"></div>
-      <div class="narrative-box" id="narrative-box"></div>
-      <div id="final-section"></div>
     </div>
   </div>
 </div>
@@ -588,7 +559,7 @@ const TEAMS = [
           {name:'Burak Yılmaz',pos:'ST',rating:85,nat:'🇹🇷'},{name:'Teofilo Gutierrez',pos:'ST',rating:82,nat:'🇨🇴'},
           {name:'Gökdeniz Karadeniz',pos:'AM',rating:86,nat:'🇹🇷'},{name:'Alanzinho',pos:'LW',rating:78,nat:'🇧🇷'}
         ]},
-      { year:'2021-22', badge:'62 Yıl Sonra Şampiyonluk', desc:'Nwakaeme ve Visca\'nın muhteşem sezonuyla 62 yıl aradan sonra şampiyonluk.',
+      { year:'2021-22', badge:'67 Yıl Sonra Şampiyonluk', desc:'Nwakaeme ve Visca\'nın muhteşem sezonuyla 67 yıl aradan sonra şampiyonluk.',
         players:[
           {name:'Uğurcan Çakır',pos:'GK',rating:85,nat:'🇹🇷'},{name:'Stefano Denswil',pos:'GK',rating:72,nat:'🇳🇱'},
           {name:'Dorukhan Toköz',pos:'RB',rating:79,nat:'🇹🇷'},{name:'Vitor Hugo',pos:'RB',rating:78,nat:'🇧🇷'},
@@ -754,7 +725,7 @@ const TEAMS = [
           {name:'Emre Kılınç',pos:'CM',rating:82,nat:'🇹🇷'},
           {name:'Volkan Şen',pos:'CM',rating:83,nat:'🇹🇷'},
           {name:'Pablo Batalla',pos:'CM',rating:81,nat:'🇦🇷'},
-          {name:'Qazim Laçi',pos:'CM',rating:99,nat:'🇦🇱'},
+          {name:'Qazim Laçi',pos:'CM',rating:80,nat:'🇦🇱'},
           {name:'Hervé Tum',pos:'CM',rating:80,nat:'🇨🇲'},
           {name:'Hürşut Meriç',pos:'CM',rating:79,nat:'🇹🇷'},
           {name:'Aatif Chahechouhe',pos:'CM',rating:79,nat:'🇲🇦'},
@@ -801,7 +772,7 @@ const TEAMS = [
           {name:'Emre Kılınç',pos:'CM',rating:82,nat:'🇹🇷'},
           {name:'Mert Hakan Yandaş',pos:'CM',rating:81,nat:'🇹🇷'},
           {name:'Volkan Şen',pos:'CM',rating:83,nat:'🇹🇷'},
-          {name:'Qazim Laçi',pos:'CM',rating:99,nat:'🇦🇱'},
+          {name:'Qazim Laçi',pos:'CM',rating:80,nat:'🇦🇱'},
           {name:'Hervé Tum',pos:'CM',rating:80,nat:'🇨🇲'},
           {name:'Hürşut Meriç',pos:'CM',rating:79,nat:'🇹🇷'},
           {name:'Didier Zokora',pos:'CM',rating:84,nat:'🇨🇮'},
@@ -817,20 +788,6 @@ const TEAMS = [
           {name:'Endri Çekiçi',pos:'LW',rating:78,nat:'🇦🇱'},
           {name:'Ahmet Suat Özyazıcı',pos:'AM',rating:88,nat:'🇹🇷'},
           {name:'Rıdvan Dilmen',pos:'AM',rating:84,nat:'🇹🇷'}
-        ]}
-    ]},
-  { id:'efsane', name:'Süper Lig Efsaneleri', short:'EF', color:'#ffc20e', type:'karma',
-    seasons:[
-      { year:'Efsane 11', badge:'Tarihi Seçki', desc:'Süper Lig tarihinin en çok konuşulan isimleri.',
-        players:[
-          {name:'Rüştü Reçber',pos:'GK',rating:89,nat:'🇹🇷'},{name:'Volkan Demirel',pos:'GK',rating:88,nat:'🇹🇷'},{name:'Onur Kıvrak',pos:'GK',rating:85,nat:'🇹🇷'},
-          {name:'Gökhan Gönül',pos:'RB',rating:86,nat:'🇹🇷'},{name:'Serkan Balcı',pos:'RB',rating:82,nat:'🇹🇷'},
-          {name:'Bülent Korkmaz',pos:'CB',rating:88,nat:'🇹🇷'},{name:'Diego Lugano',pos:'CB',rating:86,nat:'🇺🇾'},{name:'Pepe',pos:'CB',rating:87,nat:'🇵🇹'},
-          {name:'Caner Erkin',pos:'LB',rating:85,nat:'🇹🇷'},{name:'Adriano',pos:'LB',rating:84,nat:'🇧🇷'},
-          {name:'Selçuk İnan',pos:'CM',rating:87,nat:'🇹🇷'},{name:'Emre Belözoğlu',pos:'CM',rating:86,nat:'🇹🇷'},{name:'Mehmet Topal',pos:'CM',rating:85,nat:'🇹🇷'},
-          {name:'Arda Turan',pos:'AM',rating:89,nat:'🇹🇷'},{name:'Alex de Souza',pos:'AM',rating:98,nat:'🇧🇷'},
-          {name:'Ricardo Quaresma',pos:'RW',rating:88,nat:'🇵🇹'},{name:'Moussa Sow',pos:'RW',rating:86,nat:'🇸🇳'},
-          {name:'Robinho',pos:'LW',rating:84,nat:'🇧🇷'},{name:'Hakan Şükür',pos:'ST',rating:89,nat:'🇹🇷'},{name:'Didier Drogba',pos:'ST',rating:90,nat:'🇨🇮'},{name:'Burak Yılmaz',pos:'ST',rating:88,nat:'🇹🇷'}
         ]}
     ]}
 ];
@@ -850,13 +807,11 @@ const FORMATION = [
 // ═══════════════════════════════════════════════
 let G = {
   mode: 'classic',
-  // lineup[key] = { name, pos, rating, team, season }  — each slot has its own source
   lineup: {},
-  // active slot
   activeSlot: null,
   activePos: null,
-  // current draw for active slot
-  slotDraw: null,   // { team, season }
+  slotDraw: null,
+  rerollsLeft: 3,   // rerolls per slot
 };
 
 // ═══════════════════════════════════════════════
@@ -893,6 +848,7 @@ function startBuild() {
   G.slotDraw = null;
   go('s-build');
   document.getElementById('build-mode-text').textContent = G.mode === 'classic' ? '👁️ KLASİK' : '🙈 HAFIZADAN';
+  G.rerollsLeft = 3;
   document.getElementById('sp-rolling').style.display = 'none';
   document.getElementById('sp-drawn').style.display = 'none';
   document.getElementById('slot-panel-empty').style.display = 'flex';
@@ -940,11 +896,8 @@ function renderPitch() {
         <div class="slot-pos">${slot.pos}</div>
         <div class="slot-name">${player ? player.name.split(' ').pop() : slot.label}</div>`;
 
-      if (!player) {
-        div.onclick = () => activateSlot(key, slot.pos);
-      } else {
-        div.style.cursor = 'default';
-      }
+      if (player) div.style.cursor = 'default';
+      div.onclick = () => activateSlot(key, slot.pos);
       rowDiv.appendChild(div);
     });
     grid.appendChild(rowDiv);
@@ -955,9 +908,11 @@ function renderPitch() {
 // SLOT ACTIVATION — opens panel, auto-rolls
 // ═══════════════════════════════════════════════
 function activateSlot(key, pos) {
-  // Block switching to another slot while panel is open (unless clicking same slot)
+  // Lock: filled slots cannot be re-edited
+  if (G.lineup[key]) return;
+
+  // Block switching while panel is open on a different slot
   if (G.activeSlot && G.activeSlot !== key) {
-    // Show hint and shake
     const hint = document.getElementById('locked-hint');
     hint.style.display = 'block';
     const left = document.getElementById('build-left');
@@ -967,13 +922,14 @@ function activateSlot(key, pos) {
     setTimeout(() => { hint.style.display = 'none'; }, 2000);
     return;
   }
-  // Clicking same slot again = close
+  // Clicking same empty slot again = close
   if (G.activeSlot === key) {
     closeSlotPanel();
     return;
   }
   G.activeSlot = key;
   G.activePos = pos;
+  G.rerollsLeft = 3;
   document.getElementById('slot-panel-empty').style.display = 'none';
   document.getElementById('sp-search').value = '';
   renderPitch();
@@ -1012,7 +968,26 @@ function rollForSlot() {
 }
 
 function rerollSlot() {
+  if (G.rerollsLeft <= 0) return;
+  G.rerollsLeft--;
+  updateRerollBtn();
   rollForSlot();
+}
+
+function updateRerollBtn() {
+  const btn = document.getElementById('reroll-btn');
+  if (!btn) return;
+  if (G.rerollsLeft <= 0) {
+    btn.textContent = '🚫 Hak kalmadı';
+    btn.disabled = true;
+    btn.style.opacity = '0.4';
+    btn.style.cursor = 'not-allowed';
+  } else {
+    btn.textContent = '🎲 Tekrar (' + G.rerollsLeft + ')';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  }
 }
 
 function showSlotDraw() {
@@ -1028,6 +1003,7 @@ function showSlotDraw() {
   document.getElementById('sp-pos-badge').textContent = G.activePos;
 
   renderSlotPlayerList('');
+  updateRerollBtn();
   // Scroll to panel
 
 }
@@ -1040,8 +1016,20 @@ function renderSlotPlayerList(q) {
     .filter(([k]) => k !== G.activeSlot)
     .map(([, p]) => p.name);
 
-  const pool = season.players.filter(p => p.pos === pos);
-  const filtered = q ? pool.filter(p => p.name.toLowerCase().includes(q.toLowerCase())) : pool;
+  const compat = {
+    GK:['GK'],
+    RB:['RB','CB','LB'], CB:['CB','RB','LB'], LB:['LB','CB','RB'],
+    CM:['CM','AM','DM'], AM:['AM','CM'],
+    RW:['RW','AM'], LW:['LW','AM'],
+    ST:['ST','RW','LW','AM'], DM:['DM','CM']
+  };
+  const ok = compat[pos] || [pos];
+  // Show all players — compatible ones first, rest after a divider
+  let primary = season.players.filter(p => ok.includes(p.pos));
+  let secondary = season.players.filter(p => !ok.includes(p.pos));
+  let pool = q
+    ? season.players.filter(p => p.name.toLowerCase().includes(q.toLowerCase()))
+    : [...primary, ...secondary];
 
   const isBlind = G.mode === 'blind';
   document.getElementById('sp-player-list').innerHTML = pool.map(p => {
@@ -1102,7 +1090,11 @@ const TIPS = [
 ];
 
 async function startSim() {
-  if (Object.keys(G.lineup).length < 11) { go('s-build'); return; }
+  const lineupKeys = Object.keys(G.lineup);
+  if (lineupKeys.length < 11) { go('s-build'); return; }
+  // Safety: ensure all slots have valid data
+  const players = lineupKeys.map(k => G.lineup[k]).filter(p => p && p.name && p.rating);
+  if (players.length < 11) { go('s-build'); return; }
 
   // Build a label from the lineup sources
   const sources = [...new Set(Object.values(G.lineup).map(p => p.teamName))];
@@ -1117,7 +1109,7 @@ async function startSim() {
   const tipEl = document.getElementById('loading-tip');
   const tipIv = setInterval(() => { tipEl.textContent = TIPS[tipIdx++ % TIPS.length]; }, 1400);
 
-  const players = Object.values(G.lineup);
+  // players already defined above
   const avgRating = Math.round(players.reduce((a, p) => a + p.rating, 0) / players.length);
   const lineupStr = players.map(p => p.name).join(', ');
 
@@ -1139,7 +1131,7 @@ Kurallar:
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 2500,
@@ -1154,6 +1146,7 @@ Kurallar:
     showResults(sim);
   } catch (e) {
     clearInterval(tipIv);
+    console.error('Sim error:', e);
     showResults(generateLocalSim(avgRating, players));
   }
 }
